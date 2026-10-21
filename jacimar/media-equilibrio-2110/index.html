@@ -1,2 +1,1192 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f4f7f6"><title>Média e Ponto de Equilíbrio · Jacimar</title><link rel="stylesheet" href="style.css?v=1"></head><body><div class="app"><header><div class="brand"><span>∑</span><div><b>EETI Bilíngue Jacimar</b><small>Matemática · Professor Natanael</small></div></div><a href="entregas.html" class="header-link">Entregas ↗</a></header><main><section id="login" class="screen"><div class="welcome"><p class="eyebrow">AULA REMOTA · 21/10/2026</p><h1>Média e ponto<br>de equilíbrio.</h1><p>Descubra a média equilibrando a balança e interpretando gráficos.</p></div><div class="deadline">⏰ Entregue até <b>22/10, às 9h</b> · Manaus</div><form id="identify"><label for="turma">Sua turma</label><select id="turma" required><option value="">Selecione sua turma</option><option value="2º T4">2º 4</option><option value="3º T1">3º 1</option><option value="3º T2">3º 2</option></select><label for="aluno">Seu nome na chamada</label><select id="aluno" required disabled><option value="">Selecione a turma primeiro</option></select><p id="namesStatus" class="small" role="status"></p><button type="button" id="retryNames" class="text" hidden>Carregar nomes novamente</button><button id="enter" class="primary">Acessar a atividade →</button></form><p id="loginError" class="error" role="alert"></p><p class="small">Nome, turma e situação de entrega podem ser consultados por alunos, pais e responsáveis. Pode refazer até o prazo; vale a última tentativa entregue.</p></section><section id="intro" class="screen" hidden><p class="eyebrow">UMA IDEIA PARA EXPLORAR</p><h1>O lugar onde tudo<br>se equilibra.</h1><div id="introArt" class="intro-art"></div><p id="introText"></p><div class="callout"><b>Como encontrar a média?</b><p>Some os valores e divida pela quantidade. Na balança, a média é o ponto de equilíbrio.</p></div><p id="introStudent" class="small"></p><button id="begin" class="primary">Começar os 7 desafios →</button><button class="text change">Trocar aluno</button></section><section id="activity" class="screen" hidden><div class="student"><span id="student"></span><button class="text change">Trocar</button></div><div class="step-row"><button id="back" class="text">← Voltar</button><span id="step"></span><span id="attempt"></span></div><div class="progress"><span id="bar"></span></div><p id="typeLabel" class="eyebrow"></p><h2 id="question"></h2><div id="interaction"></div><div class="lesson-tools"><button id="explain" class="text">Ver cálculo</button><span id="answerLabel" class="small"></span></div><p id="feedback" role="status" aria-live="polite"></p><button id="check" class="primary">Conferir resposta →</button><p class="mini-deadline">Prazo: 22/10 às 9h · Manaus</p></section><section id="result" class="screen" hidden><p class="eyebrow">MÉDIA E PONTO DE EQUILÍBRIO</p><h1 id="resultTitle"></h1><p id="resultStudent"></p><div id="resultNote" class="callout"></div><button id="send" class="primary">Entregar atividade →</button><p id="sendStatus" role="status" aria-live="polite"></p><div id="receipt" class="receipt" hidden><b>Entrega registrada!</b><p id="receiptTime"></p><p id="protocol"></p><button id="download" class="secondary">Baixar comprovante</button></div><button id="again" class="secondary" hidden>Refazer atividade ↻</button><p class="small">Pode refazer quantas vezes quiser até o prazo. Só uma nova entrega concluída substitui a anterior.</p><a href="entregas.html" class="panel-link">Consultar entregas desta atividade ↗</a><a href="https://natanengmat.github.io/aulas-remotas/painel/jacimar.html" class="panel-link">Consultar todas as entregas da Jacimar ↗</a><button class="text change">Trocar aluno</button></section></main><footer>Professor Natanael · Jacimar · Aula remota</footer></div><dialog id="explanation"><div class="modal-head"><b>Passo a passo da média</b><button id="closeExplain" aria-label="Fechar explicação">×</button></div><div id="modalBody"></div><button id="understood" class="primary">Entendi</button></dialog><script src="lesson.js?v=1"></script><script src="app.js?v=1"></script></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Média e Ponto de Equilíbrio - Prof. Natanael</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    html, body {
+      height: 100%;
+      height: 100dvh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      background-color: #0F172A;
+    }
 
+    .app-viewport {
+      width: 100%;
+      max-width: 440px;
+      height: 100dvh;
+      margin: 0 auto;
+      background: #FFFFFF;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    }
+
+    /* Viga de equilíbrio com física suave */
+    .balance-beam {
+      transform-origin: center bottom;
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Controle de fulcro deslizante */
+    .touch-fulcrum {
+      touch-action: none;
+      cursor: grab;
+    }
+    .touch-fulcrum:active {
+      cursor: grabbing;
+    }
+
+    /* RENDERIZADOR PRECISO DE FRAÇÕES MATEMÁTICAS */
+    .math-row {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      font-weight: 700;
+      color: #0F172A;
+      line-height: 1;
+      font-size: 0.95rem;
+    }
+
+    .math-frac {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+      padding: 0 2px;
+    }
+
+    .math-num {
+      padding: 2px 4px 3px 4px;
+      border-bottom: 2px solid #0F172A;
+      text-align: center;
+      width: 100%;
+      white-space: nowrap;
+    }
+
+    .math-den {
+      padding: 3px 4px 2px 4px;
+      text-align: center;
+      width: 100%;
+      white-space: nowrap;
+    }
+
+    .math-op {
+      display: inline-flex;
+      align-items: center;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #334155;
+      padding: 0 1px;
+    }
+
+    .math-dot {
+      color: #0D9488;
+      font-weight: 900;
+      padding: 0 2px;
+    }
+
+    .sheet-slide-up {
+      animation: sheetUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes sheetUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-viewport">
+    
+    <!-- CABEÇALHO SUPERIOR (Adapta-se ao login e às lições) -->
+    <header id="app-header" class="px-4 pt-3 pb-2 border-b border-slate-100 bg-white z-20">
+      <!-- Visível na tela de identificação -->
+      <div id="header-login" class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
+            ∑
+          </div>
+          <div>
+            <h1 class="text-xs font-bold text-slate-900 leading-tight">EETI Bilíngue Jacimar Da Silva Gama</h1>
+            <p class="text-[10px] text-slate-500 font-medium">Matemática • Prof. Natanael</p>
+          </div>
+        </div>
+        <span class="text-[10px] font-bold px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-200">
+          Aula Remota
+        </span>
+      </div>
+
+      <!-- Visível durante as lições -->
+      <div id="header-lesson" class="hidden flex-col gap-1.5">
+        <div class="flex items-center justify-between text-[11px] text-slate-500 font-medium">
+          <div class="flex items-center gap-1.5 truncate max-w-[240px]">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+            <span id="header-student-badge" class="font-bold text-slate-800 truncate">Aluno</span>
+            <span class="text-slate-300">•</span>
+            <span id="header-turma-badge" class="font-semibold text-emerald-700 shrink-0">Turma</span>
+          </div>
+          <button onclick="changeStudent()" class="text-[10px] text-slate-400 hover:text-slate-600 underline">
+            Trocar
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="btn-back" onclick="previousStep()" aria-label="Voltar" class="p-1 -ml-1 text-slate-400 hover:text-slate-800 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <div id="progress-container" class="flex-1 flex gap-1 h-1.5"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CORPO PRINCIPAL: 100dvh sem rolagem vertical no exercício -->
+    <main class="px-4 py-2 flex flex-col justify-between overflow-hidden">
+      <div id="screen-content" class="h-full flex flex-col justify-around">
+        <!-- Injetado dinamicamente via JS -->
+      </div>
+    </main>
+
+    <!-- BARRA INFERIOR DE BOTÕES -->
+    <footer id="app-footer" class="px-4 py-3 border-t border-slate-100 bg-white z-20">
+      <div class="flex items-center justify-between gap-2 min-h-[46px]">
+        <div id="footer-left" class="flex-1"></div>
+        <div id="footer-right" class="flex-none"></div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- MODAL / BOTTOM SHEET DE EXPLICAÇÃO PEDAGÓGICA -->
+  <div id="explanation-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-end justify-center hidden">
+    <div class="bg-white w-full max-w-[440px] rounded-t-3xl p-5 shadow-2xl relative sheet-slide-up max-h-[88vh] overflow-y-auto">
+      <div class="w-10 h-1 bg-slate-300 rounded-full mx-auto mb-3"></div>
+
+      <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+          <h3 class="text-base font-bold text-slate-900">Passo a Passo da Média</h3>
+        </div>
+        <button onclick="closeExplanation()" class="text-slate-400 hover:text-slate-600 p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div id="modal-body" class="text-slate-700 text-xs sm:text-sm leading-relaxed space-y-3"></div>
+
+      <div class="mt-4 pt-2">
+        <button onclick="closeExplanation()" class="w-full py-3 bg-slate-900 active:bg-black text-white font-semibold rounded-xl text-sm transition-colors shadow">
+          Entendi
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sintetizador de Áudio nativo
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function beep(freq, type = 'sine', duration = 0.1) {
+      try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        g.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(g);
+        g.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function soundSuccess() {
+      beep(523.25, 'triangle', 0.08);
+      setTimeout(() => beep(659.25, 'triangle', 0.15), 90);
+    }
+
+    function soundWrong() {
+      beep(210, 'sine', 0.22);
+    }
+
+    // Estado da Aplicação
+    let studentData = {
+      name: '',
+      turma: '2º 4'
+    };
+    let isStudentLogged = false;
+
+    // Etapas da Lição
+    const steps = [
+      {
+        id: 0,
+        type: 'intro',
+        title: 'Média de Preços',
+        subtitle: 'Conceito de Ponto de Equilíbrio',
+        text: 'A sua confeitaria fechou o primeiro dia de vendas. Vamos descobrir a média de preço dos bolos observando onde a balança se equilibra!',
+        illustration: `
+          <div class="w-full flex justify-center my-3">
+            <div class="relative bg-amber-50 p-4 rounded-2xl border border-amber-100 flex flex-col items-center">
+              <svg class="w-32 h-24" viewBox="0 0 200 130" fill="none">
+                <rect x="50" y="70" width="100" height="40" rx="6" fill="#F472B6" />
+                <rect x="65" y="45" width="70" height="25" rx="5" fill="#FBCFE8" />
+                <ellipse cx="100" cy="112" rx="65" ry="8" fill="#CBD5E1" />
+                <circle cx="85" cy="38" r="4" fill="#FDE047" />
+                <circle cx="100" cy="38" r="4" fill="#FDE047" />
+                <circle cx="115" cy="38" r="4" fill="#FDE047" />
+              </svg>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: 1,
+        type: 'fulcrum',
+        maxNumber: 5,
+        targetMean: 2,
+        initialFulcrum: 0,
+        points: [{ value: 1, color: '#EC4899', count: 1 }, { value: 3, color: '#EC4899', count: 1 }],
+        tipBadge: 'A média é a soma dos valores dividida pela quantidade vendida.',
+        question: 'Um bolo rosa foi vendido por R$ 1 e outro por R$ 3. Qual é o preço médio dos bolos vendidos?',
+        explanation: `
+          <p class="font-medium text-slate-800">Cálculo direto da média aritmética simples:</p>
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex justify-center my-2">
+            <div class="math-row">
+              <span>Média</span>
+              <span class="math-op">=</span>
+              <div class="math-frac">
+                <span class="math-num">1 + 3</span>
+                <span class="math-den">2</span>
+              </div>
+              <span class="math-op">=</span>
+              <div class="math-frac">
+                <span class="math-num">4</span>
+                <span class="math-den">2</span>
+              </div>
+              <span class="math-op">=</span>
+              <span class="text-emerald-700">R$ 2</span>
+            </div>
+          </div>
+          <p>• O número <strong>2</strong> no denominador representa os <strong>2 bolos</strong> vendidos.<br>
+             • Para 2 pontos de mesmo peso, o ponto de equilíbrio fica <strong>exatamente na metade</strong> da distância entre eles.</p>
+        `
+      },
+      {
+        id: 2,
+        type: 'fulcrum',
+        maxNumber: 7,
+        targetMean: 5,
+        initialFulcrum: 1,
+        points: [{ value: 4, color: '#0D9488', count: 1 }, { value: 6, color: '#0D9488', count: 1 }],
+        question: 'Um bolo azul foi vendido por R$ 4 e outro por R$ 6. Qual é o preço médio dos bolos vendidos?',
+        explanation: `
+          <p class="font-medium text-slate-800">Somamos os preços e dividimos por 2 bolos:</p>
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex justify-center my-2">
+            <div class="math-row">
+              <span>Média</span>
+              <span class="math-op">=</span>
+              <div class="math-frac">
+                <span class="math-num">4 + 6</span>
+                <span class="math-den">2</span>
+              </div>
+              <span class="math-op">=</span>
+              <div class="math-frac">
+                <span class="math-num">10</span>
+                <span class="math-den">2</span>
+              </div>
+              <span class="math-op">=</span>
+              <span class="text-emerald-700">R$ 5</span>
+            </div>
+          </div>
+          <p>O apoio colocado no <strong>R$ 5</strong> equilibra a reta porque 5 fica a 1 unidade de distância de 4 e de 6.</p>
+        `
+      },
+      {
+        id: 3,
+        type: 'fulcrum',
+        maxNumber: 7,
+        targetMean: 4,
+        initialFulcrum: 2,
+        points: [{ value: 2, color: '#EC4899', count: 1 }, { value: 6, color: '#EC4899', count: 1 }],
+        question: 'Dois bolos rosa foram vendidos por R$ 2 e R$ 6. Onde fica o ponto de equilíbrio da média?',
+        explanation: `
+          <p class="font-medium text-slate-800">Cálculo da média:</p>
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex justify-center my-2">
+            <div class="math-row">
+              <span>Média</span>
+              <span class="math-op">=</span>
+              <div class="math-frac">
+                <span class="math-num">2 + 6</span>
+                <span class="math-den">2</span>
+              </div>
+              <span class="math-op">=</span>
+              <div class="math-frac">
+                <span class="math-num">8</span>
+                <span class="math-den">2</span>
+              </div>
+              <span class="math-op">=</span>
+              <span class="text-emerald-700">R$ 4</span>
+            </div>
+          </div>
+          <p>O apoio fica no <strong>R$ 4</strong>. Observe que a distância de 4 até 2 é de 2 unidades, e de 4 até 6 também é de 2 unidades.</p>
+        `
+      },
+      {
+        id: 4,
+        type: 'fulcrum',
+        maxNumber: 7,
+        targetMean: 4,
+        initialFulcrum: 2,
+        points: [
+          { value: 1, color: '#8B5CF6', count: 1 },
+          { value: 3, color: '#8B5CF6', count: 1 },
+          { value: 5, color: '#8B5CF6', count: 1 },
+          { value: 7, color: '#8B5CF6', count: 1 }
+        ],
+        question: 'Bolos roxos foram vendidos por R$ 1, R$ 3, R$ 5 e R$ 7. Qual é a média dos preços?',
+        explanation: `
+          <p class="font-medium text-slate-800">Média com 4 pontos equidistantes:</p>
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex justify-center my-2">
+            <div class="math-row">
+              <span>Média</span>
+              <span class="math-op">=</span>
+              <div class="math-frac">
+                <span class="math-num">1 + 3 + 5 + 7</span>
+                <span class="math-den">4</span>
+              </div>
+              <span class="math-op">=</span>
+              <div class="math-frac">
+                <span class="math-num">16</span>
+                <span class="math-den">4</span>
+              </div>
+              <span class="math-op">=</span>
+              <span class="text-emerald-700">R$ 4</span>
+            </div>
+          </div>
+          <p>A média é <strong>R$ 4</strong>. Repare que os pares (1 e 7) e (3 e 5) estão perfeitamente centralizados em torno de 4.</p>
+        `
+      },
+      {
+        id: 5,
+        type: 'quiz_chart',
+        question: 'Qual é o preço médio das bebidas vendidas?',
+        chartData: [
+          { price: 1, sales: 10 },
+          { price: 2, sales: 0 },
+          { price: 3, sales: 0 },
+          { price: 4, sales: 0 },
+          { price: 5, sales: 10 }
+        ],
+        options: [2, 3, 4, 5],
+        correctAnswer: 3,
+        explanation: `
+          <div class="space-y-2">
+            <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
+              <p>• <strong>De onde vem o 10?</strong> É a altura de cada coluna: foram vendidas <strong>10 bebidas a R$ 1</strong> e <strong>10 bebidas a R$ 5</strong>.</p>
+              <p>• <strong>De onde vem o 20?</strong> É a soma do total de itens vendidos: <strong>10 + 10 = 20 bebidas</strong>.</p>
+            </div>
+
+            <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 flex justify-center overflow-x-auto">
+              <div class="math-row">
+                <span>Média</span>
+                <span class="math-op">=</span>
+                <div class="math-frac">
+                  <span class="math-num">[ 10 <span class="math-dot">·</span> 1 ] + [ 10 <span class="math-dot">·</span> 5 ]</span>
+                  <span class="math-den">20</span>
+                </div>
+                <span class="math-op">=</span>
+                <div class="math-frac">
+                  <span class="math-num">10 + 50</span>
+                  <span class="math-den">20</span>
+                </div>
+                <span class="math-op">=</span>
+                <div class="math-frac">
+                  <span class="math-num">60</span>
+                  <span class="math-den">20</span>
+                </div>
+                <span class="math-op">=</span>
+                <span class="text-emerald-700">R$ 3</span>
+              </div>
+            </div>
+
+            <p class="text-xs text-slate-600">Com pesos iguais dos dois lados, a média é o ponto médio exato entre R$ 1 e R$ 5: <strong>R$ 3</strong>.</p>
+          </div>
+        `
+      },
+      {
+        id: 6,
+        type: 'quiz_chart',
+        question: 'Qual é o preço médio das bebidas vendidas?',
+        chartData: [
+          { price: 1, sales: 0 },
+          { price: 2, sales: 10 },
+          { price: 3, sales: 0 },
+          { price: 4, sales: 0 },
+          { price: 5, sales: 0 },
+          { price: 6, sales: 10 }
+        ],
+        options: [3, 4, 5, 6],
+        correctAnswer: 4,
+        explanation: `
+          <div class="space-y-2">
+            <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
+              <p>• <strong>De onde vem o 10?</strong> Cada coluna marca <strong>10 bebidas vendidas</strong> a R$ 2 e a R$ 6.</p>
+              <p>• <strong>De onde vem o 20?</strong> Total vendido: <strong>10 + 10 = 20 bebidas</strong>.</p>
+            </div>
+
+            <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 flex justify-center overflow-x-auto">
+              <div class="math-row">
+                <span>Média</span>
+                <span class="math-op">=</span>
+                <div class="math-frac">
+                  <span class="math-num">[ 10 <span class="math-dot">·</span> 2 ] + [ 10 <span class="math-dot">·</span> 6 ]</span>
+                  <span class="math-den">20</span>
+                </div>
+                <span class="math-op">=</span>
+                <div class="math-frac">
+                  <span class="math-num">20 + 60</span>
+                  <span class="math-den">20</span>
+                </div>
+                <span class="math-op">=</span>
+                <div class="math-frac">
+                  <span class="math-num">80</span>
+                  <span class="math-den">20</span>
+                </div>
+                <span class="math-op">=</span>
+                <span class="text-emerald-700">R$ 4</span>
+              </div>
+            </div>
+
+            <p class="text-xs text-slate-600">A metade da distância entre R$ 2 e R$ 6 é <strong>R$ 4</strong>.</p>
+          </div>
+        `
+      },
+      {
+        id: 7,
+        type: 'quiz_chart',
+        question: 'Qual é o preço médio das bebidas vendidas?',
+        chartData: [
+          { price: 1, sales: 10 },
+          { price: 2, sales: 0 },
+          { price: 3, sales: 10 },
+          { price: 4, sales: 0 },
+          { price: 5, sales: 10 }
+        ],
+        options: [2, 3, 4, 5],
+        correctAnswer: 3,
+        explanation: `
+          <div class="space-y-2">
+            <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
+              <p>• <strong>Por que o 10?</strong> Foram vendidas <strong>10 unidades de cada valor</strong> (10 a R$ 1, 10 a R$ 3 e 10 a R$ 5).</p>
+              <p>• <strong>Por que o 30 no denominador?</strong> É a soma total de itens: <strong>10 + 10 + 10 = 30 unidades</strong>.</p>
+            </div>
+
+            <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200 flex justify-center overflow-x-auto">
+              <div class="math-row">
+                <span>Média</span>
+                <span class="math-op">=</span>
+                <div class="math-frac">
+                  <span class="math-num">[ 10 <span class="math-dot">·</span> 1 ] + [ 10 <span class="math-dot">·</span> 3 ] + [ 10 <span class="math-dot">·</span> 5 ]</span>
+                  <span class="math-den">30</span>
+                </div>
+                <span class="math-op">=</span>
+                <div class="math-frac">
+                  <span class="math-num">10 + 30 + 50</span>
+                  <span class="math-den">30</span>
+                </div>
+                <span class="math-op">=</span>
+                <div class="math-frac">
+                  <span class="math-num">90</span>
+                  <span class="math-den">30</span>
+                </div>
+                <span class="math-op">=</span>
+                <span class="text-emerald-700">R$ 3</span>
+              </div>
+            </div>
+
+            <p class="text-xs text-slate-600">A coluna central em <strong>R$ 3</strong> é o fulcro perfeitamente equilibrado dessa distribuição.</p>
+          </div>
+        `
+      },
+      {
+        id: 8,
+        type: 'complete',
+        title: 'Desafio Concluído!',
+        subtitle: 'Média e Ponto de Equilíbrio'
+      }
+    ];
+
+    let currentStepIndex = 0;
+    let userFulcrum = 0;
+    let selectedQuizOption = null;
+    let isChecked = false;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Inicia direto na tela de identificação do aluno
+      renderLoginScreen();
+    });
+
+    // 0. TELA DE IDENTIFICAÇÃO DO ALUNO (PAINEL DE ENTRADA)
+    function renderLoginScreen() {
+      isStudentLogged = false;
+      document.getElementById('header-login').classList.remove('hidden');
+      document.getElementById('header-lesson').classList.add('hidden');
+
+      const content = document.getElementById('screen-content');
+      const footerLeft = document.getElementById('footer-left');
+      const footerRight = document.getElementById('footer-right');
+
+      footerLeft.innerHTML = '';
+      footerRight.innerHTML = '';
+
+      content.innerHTML = `
+        <div class="flex flex-col justify-between h-full py-2">
+          
+          <!-- Banner Pedagógico do Professor Natanael -->
+          <div class="text-center">
+            <span class="inline-block px-2.5 py-1 bg-emerald-50 text-emerald-800 text-[11px] font-bold rounded-full border border-emerald-200 mb-2">
+              Plataforma de Desafios • Matemática
+            </span>
+            <h2 class="text-lg font-extrabold text-slate-900 leading-tight">Média e Ponto de Equilíbrio</h2>
+            <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
+              Identifique-se para acessar a aula interativa preparada pelo <strong class="text-slate-800">Prof. Natanael</strong>.
+            </p>
+          </div>
+
+          <!-- Formulário Estilo Brilliant -->
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 shadow-xs space-y-3.5 my-auto">
+            
+            <!-- Seleção da Turma (2º 4, 3º 1, 3º 2) -->
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                Selecione a sua Turma
+              </label>
+              <div class="grid grid-cols-3 gap-2">
+                <button type="button" onclick="setTurma('2º 4')" id="turma-btn-24" class="turma-btn py-2 px-1 text-center font-bold text-xs rounded-xl border-2 transition-all">
+                  2º 4
+                </button>
+                <button type="button" onclick="setTurma('3º 1')" id="turma-btn-31" class="turma-btn py-2 px-1 text-center font-bold text-xs rounded-xl border-2 transition-all">
+                  3º 1
+                </button>
+                <button type="button" onclick="setTurma('3º 2')" id="turma-btn-32" class="turma-btn py-2 px-1 text-center font-bold text-xs rounded-xl border-2 transition-all">
+                  3º 2
+                </button>
+              </div>
+            </div>
+
+            <!-- Campo Nome Completo do Aluno -->
+            <div>
+              <label for="student-name-input" class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                Nome Completo do Aluno
+              </label>
+              <div class="relative">
+                <input 
+                  type="text" 
+                  id="student-name-input" 
+                  value="${studentData.name}"
+                  placeholder="Ex: Maria Clara Silva" 
+                  maxlength="45"
+                  oninput="handleNameInput(this.value)"
+                  class="w-full px-3.5 py-2.5 bg-white border-2 border-slate-200 rounded-xl text-slate-900 font-medium text-xs sm:text-sm placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 transition-all"
+                />
+              </div>
+              <p class="text-[10px] text-slate-400 mt-1">Insira seu nome e sobrenome para emissão da conclusão.</p>
+            </div>
+
+          </div>
+
+          <!-- Card institucional compacto -->
+          <div class="bg-emerald-50/60 p-2.5 rounded-xl border border-emerald-100 flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs font-bold shrink-0">
+              ✓
+            </div>
+            <div class="text-[11px] text-slate-700 leading-tight">
+              <span class="font-bold text-emerald-950 block">Atividade Obrigatória Remota</span>
+              EETI Bilíngue Jacimar Da Silva Gama
+            </div>
+          </div>
+
+        </div>
+      `;
+
+      updateTurmaButtons();
+      renderLoginFooter(studentData.name.trim().length >= 3);
+    }
+
+    function setTurma(t) {
+      studentData.turma = t;
+      updateTurmaButtons();
+      beep(400, 'sine', 0.02);
+    }
+
+    function updateTurmaButtons() {
+      const turmas = ['2º 4', '3º 1', '3º 2'];
+      const mapId = { '2º 4': 'turma-btn-24', '3º 1': 'turma-btn-31', '3º 2': 'turma-btn-32' };
+
+      turmas.forEach(t => {
+        const btn = document.getElementById(mapId[t]);
+        if (!btn) return;
+        if (studentData.turma === t) {
+          btn.className = 'py-2 px-1 text-center font-bold text-xs rounded-xl border-2 border-slate-900 bg-slate-900 text-white shadow-xs';
+        } else {
+          btn.className = 'py-2 px-1 text-center font-bold text-xs rounded-xl border-2 border-slate-200 bg-white text-slate-700 hover:border-slate-300';
+        }
+      });
+    }
+
+    function handleNameInput(val) {
+      studentData.name = val;
+      const isValid = val.trim().length >= 3;
+      renderLoginFooter(isValid);
+    }
+
+    function renderLoginFooter(isValid) {
+      const footerRight = document.getElementById('footer-right');
+      const footerLeft = document.getElementById('footer-left');
+      
+      footerLeft.innerHTML = `
+        <span class="text-[11px] text-slate-400 font-medium">Turma: <strong class="text-slate-700">${studentData.turma}</strong></span>
+      `;
+
+      footerRight.innerHTML = `
+        <button 
+          onclick="startLesson()" 
+          id="btn-start-lesson"
+          ${!isValid ? 'disabled' : ''}
+          class="px-5 py-2.5 font-bold rounded-xl text-xs sm:text-sm shadow transition-all flex items-center gap-1.5 ${
+            isValid 
+              ? 'bg-emerald-600 active:bg-emerald-700 text-white cursor-pointer' 
+              : 'bg-slate-200 text-slate-400 cursor-not-allowed opacity-70'
+          }">
+          <span>Iniciar Desafio</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </button>
+      `;
+    }
+
+    function startLesson() {
+      if (studentData.name.trim().length < 3) return;
+      isStudentLogged = true;
+      soundSuccess();
+
+      // Alternar para o cabeçalho das lições
+      document.getElementById('header-login').classList.add('hidden');
+      document.getElementById('header-lesson').classList.remove('hidden');
+      document.getElementById('header-student-badge').innerText = studentData.name.trim();
+      document.getElementById('header-turma-badge').innerText = studentData.turma;
+
+      currentStepIndex = 0;
+      renderProgress();
+      loadStep(0);
+    }
+
+    function changeStudent() {
+      renderLoginScreen();
+    }
+
+    function renderProgress() {
+      const bar = document.getElementById('progress-container');
+      bar.innerHTML = '';
+      steps.forEach((_, idx) => {
+        const seg = document.createElement('div');
+        seg.className = `flex-1 h-full rounded-full transition-all duration-300 ${
+          idx <= currentStepIndex ? 'bg-emerald-500' : 'bg-slate-200'
+        }`;
+        bar.appendChild(seg);
+      });
+
+      const btnBack = document.getElementById('btn-back');
+      if (currentStepIndex === 0) {
+        btnBack.classList.add('opacity-0', 'pointer-events-none');
+      } else {
+        btnBack.classList.remove('opacity-0', 'pointer-events-none');
+      }
+    }
+
+    function previousStep() {
+      if (currentStepIndex > 0) {
+        currentStepIndex--;
+        renderProgress();
+        loadStep(currentStepIndex);
+      }
+    }
+
+    function nextStep() {
+      if (currentStepIndex < steps.length - 1) {
+        currentStepIndex++;
+        renderProgress();
+        loadStep(currentStepIndex);
+      }
+    }
+
+    function loadStep(idx) {
+      isChecked = false;
+      selectedQuizOption = null;
+      const step = steps[idx];
+      const content = document.getElementById('screen-content');
+      const footerLeft = document.getElementById('footer-left');
+      const footerRight = document.getElementById('footer-right');
+
+      footerLeft.innerHTML = '';
+      footerRight.innerHTML = '';
+
+      if (step.type === 'intro') {
+        renderIntro(step, content, footerRight);
+      } else if (step.type === 'fulcrum') {
+        userFulcrum = step.initialFulcrum !== undefined ? step.initialFulcrum : 0;
+        renderFulcrum(step, content, footerLeft, footerRight);
+      } else if (step.type === 'quiz_chart') {
+        renderQuizChart(step, content, footerLeft, footerRight);
+      } else if (step.type === 'complete') {
+        renderComplete(step, content, footerRight);
+      }
+    }
+
+    // 1. TELA INTRODUTÓRIA
+    function renderIntro(step, container, rightFooter) {
+      container.innerHTML = `
+        <div class="text-center flex flex-col justify-center items-center h-full">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-600 mb-1">${step.subtitle}</span>
+          <h1 class="text-lg font-extrabold text-slate-900 mb-1">${step.title}</h1>
+          <p class="text-slate-600 text-xs sm:text-sm leading-relaxed px-2">${step.text}</p>
+          ${step.illustration}
+        </div>
+      `;
+
+      rightFooter.innerHTML = `
+        <button onclick="nextStep()" class="px-6 py-2.5 bg-slate-900 active:bg-black text-white font-semibold rounded-xl text-sm shadow transition-all">
+          Continuar
+        </button>
+      `;
+    }
+
+    // 2. BALANÇA INTERATIVA
+    function renderFulcrum(step, container, leftFooter, rightFooter) {
+      const max = step.maxNumber;
+
+      container.innerHTML = `
+        <div class="flex flex-col justify-between h-full py-1">
+          <div>
+            ${step.tipBadge ? `<div class="mb-1.5 px-2.5 py-0.5 bg-emerald-50 text-emerald-800 text-[11px] font-semibold rounded-md border border-emerald-100 inline-block leading-tight">${step.tipBadge}</div>` : ''}
+            <h2 class="text-xs sm:text-sm font-bold text-slate-900 leading-snug">${step.question}</h2>
+          </div>
+
+          <div class="relative w-full py-8 my-auto select-none" id="fulcrum-area">
+            
+            <!-- Viga da Balança -->
+            <div id="balance-beam" class="balance-beam relative w-full h-3 bg-slate-700 rounded-full shadow-xs">
+              <div id="weights-layer" class="absolute inset-0 pointer-events-none"></div>
+            </div>
+
+            <!-- Marcações da régua -->
+            <div class="relative w-full mt-2 flex justify-between px-1" id="scale-ticks"></div>
+
+            <!-- Trilho e Fulcro Deslizante -->
+            <div class="relative w-full h-12 mt-1" id="track-fulcrum">
+              <div id="handle-fulcrum" class="touch-fulcrum absolute top-0 -translate-x-1/2 flex flex-col items-center group py-0.5 px-2">
+                <svg class="w-10 h-8 drop-shadow text-slate-500 group-active:text-slate-800 transition-colors" viewBox="0 0 40 32" fill="currentColor">
+                  <path d="M20 2L38 30H2L20 2Z" stroke="#334155" stroke-width="2.5" stroke-linejoin="round" />
+                  <circle cx="20" cy="18" r="3" fill="#FFFFFF" />
+                </svg>
+                <span class="text-[10px] font-bold text-slate-500 mt-0.5">Apoio</span>
+              </div>
+            </div>
+
+            <div class="flex justify-end mt-0.5">
+              <button onclick="resetBeam()" class="text-[11px] text-slate-400 hover:text-slate-600 flex items-center gap-1 font-medium">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                Redefinir
+              </button>
+            </div>
+          </div>
+
+          <!-- Mensagem física de feedback -->
+          <div id="beam-msg" class="h-4 text-center text-xs font-semibold text-amber-600 opacity-0 transition-opacity"></div>
+        </div>
+      `;
+
+      // Gerar marcações numéricas
+      const ticks = document.getElementById('scale-ticks');
+      ticks.innerHTML = '';
+      for (let i = 0; i <= max; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'flex flex-col items-center py-0.5 cursor-pointer focus:outline-none';
+        btn.onclick = () => {
+          if (!isChecked) {
+            userFulcrum = i;
+            updateFulcrumPosition(max);
+            beep(360, 'sine', 0.025);
+          }
+        };
+        btn.innerHTML = `
+          <span class="w-0.5 h-1.5 bg-slate-300 mb-0.5"></span>
+          <span class="text-xs font-bold text-slate-700">${i}</span>
+        `;
+        ticks.appendChild(btn);
+      }
+
+      // Adicionar pesos coloridos
+      const weightsLayer = document.getElementById('weights-layer');
+      step.points.forEach(pt => {
+        const count = pt.count || 1;
+        const leftPct = (pt.value / max) * 100;
+        for (let c = 0; c < count; c++) {
+          const block = document.createElement('div');
+          const bottom = 12 + (c * 20);
+          block.className = 'absolute -translate-x-1/2 rounded-xs shadow-xs';
+          block.style.left = `${leftPct}%`;
+          block.style.bottom = `${bottom}px`;
+          block.style.width = '19px';
+          block.style.height = '19px';
+          block.style.backgroundColor = pt.color;
+          weightsLayer.appendChild(block);
+        }
+      });
+
+      initTouchDrag(max);
+      updateFulcrumPosition(max);
+
+      rightFooter.innerHTML = `
+        <button onclick="checkBeam()" class="px-6 py-2.5 bg-slate-900 active:bg-black text-white font-semibold rounded-xl text-xs sm:text-sm shadow transition-all">
+          Conferir
+        </button>
+      `;
+    }
+
+    function initTouchDrag(max) {
+      const track = document.getElementById('track-fulcrum');
+      const handle = document.getElementById('handle-fulcrum');
+      let isDragging = false;
+
+      function move(clientX) {
+        if (!isDragging || isChecked) return;
+        const rect = track.getBoundingClientRect();
+        let relX = clientX - rect.left;
+        let clamped = Math.max(0, Math.min(relX, rect.width));
+        let snap = Math.round((clamped / rect.width) * max);
+        if (snap !== userFulcrum) {
+          userFulcrum = snap;
+          updateFulcrumPosition(max);
+          beep(380, 'sine', 0.02);
+        }
+      }
+
+      handle.addEventListener('mousedown', (e) => {
+        if (isChecked) return;
+        isDragging = true;
+        e.preventDefault();
+      });
+      window.addEventListener('mousemove', (e) => { if (isDragging) move(e.clientX); });
+      window.addEventListener('mouseup', () => { isDragging = false; });
+
+      handle.addEventListener('touchstart', () => {
+        if (!isChecked) isDragging = true;
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (isDragging && e.touches.length > 0) {
+          move(e.touches[0].clientX);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchend', () => { isDragging = false; });
+    }
+
+    function updateFulcrumPosition(max) {
+      const handle = document.getElementById('handle-fulcrum');
+      if (handle) {
+        handle.style.left = `${(userFulcrum / max) * 100}%`;
+      }
+    }
+
+    function resetBeam() {
+      const step = steps[currentStepIndex];
+      userFulcrum = step.initialFulcrum !== undefined ? step.initialFulcrum : 0;
+      isChecked = false;
+      document.getElementById('balance-beam').style.transform = 'rotate(0deg)';
+      document.getElementById('beam-msg').classList.add('opacity-0');
+      updateFulcrumPosition(step.maxNumber);
+      
+      const leftFooter = document.getElementById('footer-left');
+      const rightFooter = document.getElementById('footer-right');
+      leftFooter.innerHTML = '';
+      rightFooter.innerHTML = `
+        <button onclick="checkBeam()" class="px-6 py-2.5 bg-slate-900 active:bg-black text-white font-semibold rounded-xl text-xs sm:text-sm shadow transition-all">
+          Conferir
+        </button>
+      `;
+    }
+
+    function checkBeam() {
+      const step = steps[currentStepIndex];
+      const beam = document.getElementById('balance-beam');
+      const msg = document.getElementById('beam-msg');
+      const leftFooter = document.getElementById('footer-left');
+      const rightFooter = document.getElementById('footer-right');
+      isChecked = true;
+
+      const diff = userFulcrum - step.targetMean;
+
+      if (diff === 0) {
+        soundSuccess();
+        beam.style.transform = 'rotate(0deg)';
+        beam.classList.add('bg-emerald-600');
+        msg.classList.remove('opacity-0');
+        msg.className = 'h-4 text-center text-xs font-bold text-emerald-600';
+        msg.innerText = 'Equilíbrio exato!';
+
+        leftFooter.innerHTML = `
+          <button onclick="openExplanation()" class="px-3 py-2 border border-slate-300 active:bg-slate-100 text-slate-700 font-medium rounded-xl text-xs flex items-center gap-1 transition-colors">
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Por quê?
+          </button>
+        `;
+
+        rightFooter.innerHTML = `
+          <button onclick="nextStep()" class="px-6 py-2.5 bg-emerald-600 active:bg-emerald-700 text-white font-semibold rounded-xl text-xs sm:text-sm shadow transition-all">
+            Continuar
+          </button>
+        `;
+      } else {
+        soundWrong();
+        msg.classList.remove('opacity-0');
+        msg.className = 'h-4 text-center text-xs font-semibold text-amber-600';
+
+        if (diff < 0) {
+          beam.style.transform = 'rotate(10deg)';
+          msg.innerText = 'O lado direito está muito pesado!';
+        } else {
+          beam.style.transform = 'rotate(-10deg)';
+          msg.innerText = 'O lado esquerdo está muito pesado!';
+        }
+
+        leftFooter.innerHTML = `
+          <button onclick="openExplanation()" class="text-xs font-medium text-slate-500 underline py-1">
+            Ver resposta
+          </button>
+        `;
+
+        rightFooter.innerHTML = `
+          <button onclick="resetBeam()" class="px-4 py-2 bg-slate-100 active:bg-slate-200 text-slate-800 font-medium rounded-xl text-xs border border-slate-200 transition-all">
+            Tentar de novo
+          </button>
+        `;
+      }
+    }
+
+    // 3. QUIZ COM GRÁFICO DE BARRAS
+    function renderQuizChart(step, container, leftFooter, rightFooter) {
+      container.innerHTML = `
+        <div class="flex flex-col justify-between h-full py-1">
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-600 mb-0.5 block text-center">Desafio de Análise</span>
+            <h2 class="text-xs sm:text-sm font-bold text-slate-900 text-center leading-snug">${step.question}</h2>
+          </div>
+
+          <!-- Gráfico adaptado para caber sem scroll -->
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 shadow-xs my-auto">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2 flex justify-between px-1">
+              <span>Vendas (unidades)</span>
+              <span>Preço</span>
+            </div>
+
+            <div class="flex items-end justify-between h-28 border-b-2 border-slate-300 px-1 pt-1">
+              ${step.chartData.map(d => {
+                const heightPct = d.sales > 0 ? (d.sales / 30) * 100 : 0;
+                return `
+                  <div class="flex-1 flex flex-col items-center h-full justify-end">
+                    <span class="text-[11px] font-bold text-indigo-950 mb-0.5 ${d.sales === 0 ? 'opacity-0' : ''}">${d.sales}</span>
+                    <div class="w-6 sm:w-8 bg-indigo-700 rounded-t transition-all duration-300" style="height: ${heightPct}%;"></div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+            <div class="flex justify-between px-1 mt-1.5">
+              ${step.chartData.map(d => `
+                <div class="flex-1 text-center">
+                  <span class="text-[11px] font-bold text-slate-700">R$ ${d.price}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Grade de Opções de resposta rápida -->
+          <div class="grid grid-cols-2 gap-2 mt-1">
+            ${step.options.map(opt => `
+              <button onclick="selectOption(${opt})" id="opt-btn-${opt}" class="py-2.5 px-2 rounded-xl border-2 border-slate-200 font-bold text-slate-800 text-xs sm:text-sm active:scale-98 transition-all text-center">
+                R$ ${opt}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      rightFooter.innerHTML = `
+        <button id="btn-quiz-check" onclick="checkQuiz()" disabled class="opacity-40 cursor-not-allowed px-6 py-2.5 bg-slate-900 text-white font-semibold rounded-xl text-xs sm:text-sm shadow transition-all">
+          Conferir
+        </button>
+      `;
+    }
+
+    function selectOption(val) {
+      if (isChecked) return;
+      selectedQuizOption = val;
+
+      const step = steps[currentStepIndex];
+      step.options.forEach(opt => {
+        const b = document.getElementById(`opt-btn-${opt}`);
+        if (opt === val) {
+          b.className = 'py-2.5 px-2 rounded-xl border-2 border-slate-900 bg-slate-900 text-white font-bold text-xs sm:text-sm text-center shadow-xs';
+        } else {
+          b.className = 'py-2.5 px-2 rounded-xl border-2 border-slate-200 font-bold text-slate-800 text-xs sm:text-sm active:scale-98 transition-all text-center';
+        }
+      });
+
+      const check = document.getElementById('btn-quiz-check');
+      check.removeAttribute('disabled');
+      check.classList.remove('opacity-40', 'cursor-not-allowed');
+    }
+
+    function checkQuiz() {
+      if (selectedQuizOption === null) return;
+      isChecked = true;
+      const step = steps[currentStepIndex];
+      const isCorrect = selectedQuizOption === step.correctAnswer;
+      const leftFooter = document.getElementById('footer-left');
+      const rightFooter = document.getElementById('footer-right');
+      const selectedBtn = document.getElementById(`opt-btn-${selectedQuizOption}`);
+
+      if (isCorrect) {
+        soundSuccess();
+        selectedBtn.className = 'py-2.5 px-2 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-800 font-bold text-xs sm:text-sm text-center';
+
+        leftFooter.innerHTML = `
+          <button onclick="openExplanation()" class="px-3 py-2 border border-slate-300 active:bg-slate-100 text-slate-700 font-medium rounded-xl text-xs flex items-center gap-1 transition-colors">
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Por quê?
+          </button>
+        `;
+
+        rightFooter.innerHTML = `
+          <button onclick="nextStep()" class="px-6 py-2.5 bg-emerald-600 active:bg-emerald-700 text-white font-semibold rounded-xl text-xs sm:text-sm shadow transition-all">
+            Continuar
+          </button>
+        `;
+      } else {
+        soundWrong();
+        selectedBtn.className = 'py-2.5 px-2 rounded-xl border-2 border-red-500 bg-red-50 text-red-700 font-bold text-xs sm:text-sm text-center';
+
+        leftFooter.innerHTML = `
+          <button onclick="openExplanation()" class="text-xs font-medium text-slate-500 underline py-1">
+            Ver cálculo
+          </button>
+        `;
+
+        rightFooter.innerHTML = `
+          <button onclick="retryQuiz()" class="px-4 py-2 bg-slate-100 active:bg-slate-200 text-slate-800 font-medium rounded-xl text-xs border border-slate-200 transition-all">
+            Tentar de novo
+          </button>
+        `;
+      }
+    }
+
+    function retryQuiz() {
+      isChecked = false;
+      selectedQuizOption = null;
+      loadStep(currentStepIndex);
+    }
+
+    // 4. TELA FINAL PERSONALIZADA COM O ALUNO E TURMA
+    function renderComplete(step, container, rightFooter) {
+      container.innerHTML = `
+        <div class="text-center flex flex-col justify-around h-full py-2">
+          <div>
+            <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-2 shadow-xs ring-4 ring-emerald-50">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-700">Lição Remota Finalizada</span>
+            <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 mt-1">Parabéns, ${studentData.name.trim()}!</h2>
+            <p class="text-xs text-slate-600 px-3 mt-1 leading-relaxed">
+              Você completou todos os desafios de média aritmética e ponto de equilíbrio.
+            </p>
+          </div>
+
+          <!-- Comprovante pedagógico digital -->
+          <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/90 text-left my-2 space-y-2">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+              <span class="text-[11px] font-bold text-slate-500">Instituição:</span>
+              <span class="text-[11px] font-bold text-slate-900 text-right truncate ml-2">EETI Bilíngue Jacimar Da Silva Gama</span>
+            </div>
+            <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+              <span class="text-[11px] font-bold text-slate-500">Professor:</span>
+              <span class="text-[11px] font-bold text-slate-900">Natanael</span>
+            </div>
+            <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+              <span class="text-[11px] font-bold text-slate-500">Turma:</span>
+              <span class="text-xs font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">${studentData.turma}</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-slate-500">Status:</span>
+              <span class="text-xs font-bold text-emerald-600 flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                Concluído com Êxito
+              </span>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-slate-400">Tire um print desta tela para comprovar a realização da atividade remota.</p>
+        </div>
+      `;
+
+      rightFooter.innerHTML = `
+        <button onclick="changeStudent()" class="px-5 py-2.5 bg-slate-900 active:bg-black text-white font-semibold rounded-xl text-xs sm:text-sm shadow transition-all">
+          Novo Aluno / Reiniciar
+        </button>
+      `;
+    }
+
+    // MODAL DE EXPLICAÇÃO
+    function openExplanation() {
+      const step = steps[currentStepIndex];
+      const modal = document.getElementById('explanation-modal');
+      const body = document.getElementById('modal-body');
+      body.innerHTML = step.explanation || '<p>A média divide os valores igualmente em partes balanceadas.</p>';
+      modal.classList.remove('hidden');
+    }
+
+    function closeExplanation() {
+      document.getElementById('explanation-modal').classList.add('hidden');
+    }
+  </script>
+<script src="integracao.js?v=gemini2"></script>
+</body>
+</html>
