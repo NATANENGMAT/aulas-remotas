@@ -3,6 +3,8 @@
  const API='https://jzepdmolnoobgbgdavyf.supabase.co/functions/v1/graficos-2310',KEY='sb_publishable_wjcJ0tnDxK9ucEu3B3vchQ_CtMn6R8M',PANEL='https://natanengmat.github.io/aulas-remotas/painel/jacimar.html';
  let identity=null,request=0,sending=false;
  const originalRender=render;
+ const originalAction=action;
+ action=function(element){if(sending){toast('Aguarde o registro da sua entrega.');return;}return originalAction(element);};
  async function api(route,body){const r=await fetch(API+'/'+route,{method:body?'POST':'GET',headers:{apikey:KEY,...(body?{'Content-Type':'application/json'}:{}),...(identity?{'x-session':identity.token}:{})},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(20000)});const d=await r.json();if(!r.ok)throw Error(d.error||'Não foi possível conectar. Tente novamente.');return d;}
  const time=d=>new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Manaus',dateStyle:'short',timeStyle:'short'}).format(new Date(d));
  window.Jacimar={studentLabel:()=>identity?identity.aluno.nome+' · '+identity.aluno.turma.replace('º T','º '):'',receiptLabel:()=>identity?.entrega?'Entregue '+time(identity.entrega.enviada_em)+' · '+identity.entrega.protocolo:''};
