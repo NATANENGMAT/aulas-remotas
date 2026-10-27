@@ -1,1 +1,67 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url=../?modo=apresentacao"><title>Abrindo apresentação...</title></head><body><p>Abrindo apresentação...</p><script>location.replace('../?modo=apresentacao');</script></body></html>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sistema 3x3 — Apresentação</title><style>html,body,iframe{margin:0;width:100%;height:100%;border:0}body{overflow:hidden;background:#eef3f8}iframe{display:block}</style></head><body><iframe id="aula" src="../?modo=apresentacao" allow="fullscreen"></iframe><script>
+const SUPA_URL='https://jzepdmolnoobgbgdavyf.supabase.co';
+const SUPA_KEY='sb_publishable_wjcJ0tnDxK9ucEu3B3vchQ_CtMn6R8M';
+const frame=document.getElementById('aula');
+frame.addEventListener('load',()=>{
+  const w=frame.contentWindow,d=frame.contentDocument;if(!d)return;
+  const q=s=>d.querySelector(s),qa=s=>[...d.querySelectorAll(s)];
+  const student=q('#student')||q('#studentName');
+  const enter=q('#enter')||q('#enterLesson');
+  const prev=q('#prev'),next=q('#next');
+  const person=q('#person');
+  const main=q('.main');
+  const fill=q('#fill')||q('#progressFill');
+  const counter=q('#counter')||q('#stageCounter');
+  const stages=qa('.stage');
+  const getCurrent=()=>Math.max(0,stages.findIndex(s=>s.classList.contains('on')||s.classList.contains('active')));
+  const chosen=()=>student&&student.value?student.value:'';
+  function setStage(i){
+    i=Math.max(0,Math.min(stages.length-1,i));
+    stages.forEach((s,n)=>{s.classList.toggle('on',n===i);s.classList.toggle('active',n===i)});
+    if(prev)prev.disabled=i===0;
+    if(next){next.disabled=i===0&&!chosen();next.textContent=i===stages.length-1?'Início ↻':'Próximo →'}
+    if(counter)counter.textContent=i===0?'Identificação':`Etapa ${i} de ${stages.length-1}`;
+    if(fill)fill.style.width=((i+1)/stages.length*100)+'%';
+    if(main)main.scrollTop=0;
+    const replay=stages[i]?.querySelector('[data-replay]');if(replay)setTimeout(()=>replay.click(),450);
+  }
+  function enterLesson(){
+    const name=chosen();if(!name)return;
+    try{w.localStorage.setItem('s3x3_nome_2t4',name)}catch(e){}
+    if(person)person.textContent=name;setStage(1);
+  }
+  if(student){student.addEventListener('change',()=>{const ok=!!chosen();if(enter)enter.disabled=!ok;if(next)next.disabled=!ok})}
+  if(enter)enter.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();enterLesson()},true);
+  if(next)next.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();const i=getCurrent();if(i===0){enterLesson();return}setStage(i===stages.length-1?1:i+1)},true);
+  if(prev)prev.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();setStage(getCurrent()-1)},true);
+
+  const save=q('#saveActivity')||q('#save');
+  const result=q('#saveResult')||q('.saveResult');
+  if(save)save.addEventListener('click',async e=>{
+    e.preventDefault();e.stopImmediatePropagation();
+    const name=(person&&person.textContent&&person.textContent!=='Selecione seu nome')?person.textContent:chosen();
+    const cards=qa('.practice');
+    const respostas=[];let acertos=0;
+    for(let idx=0;idx<cards.length;idx++){
+      const card=cards[idx];
+      const sel=card.querySelector('[data-opt].sel,[data-opt].selected,[data-opt].ok,[data-opt].bad,[data-opt].correct,[data-opt].wrong');
+      if(!sel){if(result)result.textContent='Marque as 5 questões antes de enviar.';return}
+      const alt=Number(sel.dataset.opt),correta=Number(card.dataset.correct),ok=alt===correta;
+      if(ok)acertos++;
+      respostas.push({questao:Number(card.dataset.q||idx+1),selected:alt,correct:ok});
+    }
+    const record={turma:'2º 4',nome:name,atividade:'Sistema Linear 3×3',respostas,acertos,total:5,percentual:acertos*20};
+    save.disabled=true;save.textContent='Enviando…';if(result)result.textContent='Enviando para o professor…';
+    try{
+      const r=await fetch(SUPA_URL+'/rest/v1/atividade_sistema_3x3_2t4',{method:'POST',headers:{apikey:SUPA_KEY,Authorization:'Bearer '+SUPA_KEY,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(record)});
+      if(!r.ok)throw new Error(await r.text());
+      if(result)result.textContent=`✓ ${name}: enviado ao professor — ${acertos}/5 acertos.`;
+      save.textContent='Enviado ao professor ✓';
+    }catch(err){
+      if(result)result.textContent='⚠ Não consegui enviar. Verifique a internet e tente novamente.';
+      save.disabled=false;save.textContent='Tentar enviar novamente';console.error(err);
+    }
+  },true);
+  setStage(getCurrent());
+});
+</script></body></html>
