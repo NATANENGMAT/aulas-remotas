@@ -1,0 +1,24 @@
+:root{--navh:8.5%}
+body{display:grid;place-items:center;padding:1.1vh 1vw}
+.app{width:min(97vw,calc(95vh*16/9));height:min(95vh,calc(97vw*9/16));aspect-ratio:16/9;border:1px solid #d9e3ed;border-radius:26px;box-shadow:0 24px 70px rgba(30,41,59,.14)}
+.slide{inset:7px 0 var(--navh) 0;padding:3.6% 4.5% 2.6%;flex-direction:column;justify-content:center;gap:1vh}
+.navbar{height:var(--navh);padding:0 3.2%}
+.navbar button{padding:.7vw 1.2vw;font-size:clamp(12px,.9vw,17px)}
+.status{font-size:clamp(11px,.82vw,15px)}
+.tag{font-size:clamp(11px,.78vw,14px);padding:.4vw .7vw}
+h1{font-size:clamp(34px,3.2vw,58px)}h2{font-size:clamp(27px,2.45vw,44px)}h3{font-size:clamp(16px,1.2vw,22px)}
+.lead{font-size:clamp(17px,1.35vw,25px)}
+.cards{grid-template-columns:repeat(4,1fr);gap:1vw;margin-top:1.8vh}
+.card{padding:1.15vw}.card em{width:2.3vw;height:2.3vw;min-width:32px;min-height:32px}.card b{font-size:clamp(15px,1.15vw,21px)}.card small{font-size:clamp(11px,.8vw,14px)}
+.notebook{padding:1vw 1.3vw}.notebook p{font-size:clamp(15px,1.12vw,21px)}
+.note{padding:.8vw 1vw;font-size:clamp(13px,.95vw,18px)}
+.taskgrid{grid-template-columns:1.05fr .95fr;gap:1.1vw;align-items:stretch}
+.panel{padding:1vw}
+.sortwrap{padding:.7vw .8vw}.sortlabel{font-size:clamp(12px,.9vw,16px)}.sorthelp{font-size:clamp(10px,.74vw,13px)}
+.sortzone{gap:.55vw;margin:.7vh 0}.tile{min-width:3.7vw;padding:.58vw .75vw;font-size:clamp(19px,1.6vw,30px)}
+.checkbtn,.resetbtn{padding:.6vw .9vw;font-size:clamp(12px,.9vw,16px)}
+.answerpanel{padding:.9vw}.answerpanel h3{margin-bottom:.7vh}.answers{gap:.55vw}.answers button{padding:.62vw .75vw;min-height:48px;font-size:clamp(12px,.92vw,17px)}
+.feedback{padding:.65vw .8vw;margin-top:.7vh;font-size:clamp(12px,.84vw,15px);min-height:48px}
+.meanviz{margin:.6vh 0}.block{width:24px;height:14px}.stack label{font-size:12px}
+.formula{padding:.65vw .8vw;font-size:clamp(15px,1.15vw,21px)}
+.finalbox{padding:1vw;font-size:clamp(17px,1.3vw,24px)}
