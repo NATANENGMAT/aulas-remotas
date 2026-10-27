@@ -1,25 +1,11 @@
 :root{--navh:9.5%}
-body{background:#edf2f7}
-.app{width:100vw;height:100svh;max-width:540px;margin:0 auto}
-.slide{inset:7px 0 var(--navh) 0;padding:4.7vh 5vw 2.2vh;flex-direction:column;justify-content:flex-start;gap:1vh;overflow:auto;-webkit-overflow-scrolling:touch}
-.navbar{height:var(--navh);padding:0 4vw}
-.navbar button{padding:10px 12px;font-size:13px}
-.status{font-size:11px;max-width:42vw}
-.tag{font-size:11px;padding:7px 10px}
-h1{font-size:clamp(30px,8.8vw,43px)}h2{font-size:clamp(27px,7.6vw,38px)}h3{font-size:18px}
-.lead{font-size:clamp(16px,4.6vw,21px)}
-.cards{grid-template-columns:1fr 1fr;gap:9px;margin-top:1vh}
-.card{padding:11px}.card em{width:34px;height:34px}.card b{font-size:15px}.card small{font-size:11px}
-.notebook{padding:12px 13px}.notebook p{font-size:15px}
-.note{padding:10px 11px;font-size:14px}
-.taskgrid{grid-template-columns:1fr;gap:9px}
-.panel{padding:10px}
-.sortwrap{padding:9px}.sortlabel{font-size:13px}.sorthelp{font-size:12px}
-.sortzone{gap:7px;margin:8px 0}.tile{min-width:46px;padding:9px 10px;font-size:20px}
-.checkbtn,.resetbtn{padding:10px 11px;font-size:13px}
-.answerpanel{padding:9px}.answerpanel h3{margin-bottom:7px}.answers{gap:7px}.answers button{padding:11px 8px;min-height:48px;font-size:13px}
-.feedback{padding:10px 11px;margin-top:8px;font-size:13px;min-height:48px}
-.meanviz{margin:4px 0}.block{width:22px;height:13px}.stack label{font-size:11px}
-.formula{padding:10px;font-size:17px}
-.finalbox{padding:12px;font-size:17px}
-@media(max-height:720px){.slide{padding-top:3.5vh}h1{font-size:30px}h2{font-size:27px}.lead{font-size:16px}.notebook p{font-size:14px}.tile{min-width:42px;padding:7px 8px;font-size:18px}.answers button{padding:8px 6px;min-height:43px}}
+body{background:#edf2f7}.app{width:100vw;height:100svh;max-width:540px;margin:0 auto}
+.slide{inset:7px 0 var(--navh) 0;padding:4.2vh 5vw 2.2vh;flex-direction:column;justify-content:flex-start;gap:1vh;overflow:auto;-webkit-overflow-scrolling:touch}
+.navbar{height:var(--navh);padding:0 4vw}.navbar button{padding:10px 12px;font-size:13px}.status{font-size:11px;max-width:42vw}
+.tag{font-size:11px;padding:7px 10px}h1{font-size:clamp(30px,8.8vw,43px)}h2{font-size:clamp(27px,7.6vw,38px)}h3{font-size:18px}
+.notebook{padding:12px 13px}.notebook p{font-size:15px}.note{padding:10px 11px;font-size:14px}
+.taskgrid{grid-template-columns:1fr;gap:9px}.panel{padding:10px}
+.sortwrap{padding:9px}.zones{grid-template-columns:1fr;gap:6px}.moveArrow{font-size:24px;transform:rotate(90deg);height:22px}.sortlabel{font-size:13px;margin-bottom:5px}
+.dropzone{min-height:76px;gap:7px;padding:8px}.tile{min-width:46px;padding:9px 10px;font-size:20px}.sorthelp{font-size:12px;margin-top:7px}.checkrow{margin-top:7px}.checkbtn,.resetbtn{padding:10px 11px;font-size:13px}
+.answerpanel{padding:9px}.answerpanel h3{margin-bottom:7px}.answers{gap:7px}.answers button{padding:11px 8px;min-height:48px;font-size:13px}.feedback{padding:10px 11px;margin-top:8px;font-size:13px;min-height:46px}.finalbox{padding:12px;font-size:17px}
+@media(max-height:720px){.slide{padding-top:3vh}h1{font-size:30px}h2{font-size:27px}.notebook p{font-size:14px}.dropzone{min-height:62px}.tile{min-width:42px;padding:7px 8px;font-size:18px}.answers button{padding:8px 6px;min-height:43px}}
