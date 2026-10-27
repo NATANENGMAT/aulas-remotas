@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sistema 3×3 — resolução escalonada</title>
+<style>
+:root{
+  --ink:#162033; --muted:#667085; --line:#dbe4ee; --violet:#5b4df0;
+  --blue:#198bd1; --green:#166534; --greenbg:#ecfdf3; --soft:#eef2ff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#e9eef5;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}
+body{display:grid;place-items:center}
+[data-composition-id="solve-3x3"]{
+  position:relative; width:min(100vw,calc(100vh * 16 / 9)); aspect-ratio:16/9;
+  overflow:hidden; background:#fff; border-radius:24px; box-shadow:0 18px 70px rgba(15,23,42,.16);
+}
+.scene-content{position:absolute;inset:0;display:flex;flex-direction:column;width:100%;height:100%;padding:4.8% 6.5% 4.5%;gap:2.2%;box-sizing:border-box}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;min-height:11%}
+.kicker{font-size:clamp(12px,1.05vw,20px);font-weight:900;letter-spacing:.07em;color:#4338ca;background:#eef2ff;padding:.55em .9em;border-radius:999px;display:inline-flex}
+h1{font-size:clamp(26px,2.65vw,52px);line-height:1.02;letter-spacing:-.045em;margin:.28em 0 0}
+.known{display:flex;gap:12px;min-height:52px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
+.chip{font-family:"Cambria Math",Georgia,serif;font-weight:800;font-size:clamp(17px,1.55vw,30px);padding:.42em .7em;border-radius:14px;background:var(--greenbg);color:var(--green);border:2px solid #bbf7d0;opacity:0}
+.stage{position:relative;flex:1;min-height:0;border:1px solid var(--line);border-radius:22px;background:radial-gradient(circle at 10% 10%,rgba(91,77,240,.06),transparent 30%),#fff;overflow:hidden}
+.phase{position:absolute;inset:0;padding:3.2% 6%;display:flex;flex-direction:column;justify-content:center;gap:1.2%;opacity:0}
+.phase-label{font-size:clamp(13px,1vw,19px);font-weight:900;letter-spacing:.06em;color:var(--violet);margin-bottom:.8%}
+.eqline{display:flex;align-items:center;justify-content:center;gap:.28em;min-height:16%;font-family:"Cambria Math",Georgia,serif;font-weight:800;font-size:clamp(32px,3.35vw,66px);line-height:1.1;opacity:0;position:relative}
+.eqline.small{font-size:clamp(27px,2.8vw,55px)}
+.eqline.result{color:var(--green)}
+.frac{display:inline-grid;grid-template-rows:auto auto;line-height:1;vertical-align:middle;text-align:center;min-width:1.25em;margin:0 .08em}
+.frac>span:first-child{padding:0 .14em .08em;border-bottom:.055em solid currentColor}
+.frac>span:last-child{padding:.08em .14em 0}
+.explain{display:flex;align-items:center;justify-content:center;min-height:8%;font-size:clamp(13px,1.12vw,21px);color:var(--muted);font-weight:750;text-align:center;opacity:0}
+.flight{position:absolute;left:0;top:0;z-index:50;font-family:"Cambria Math",Georgia,serif;font-weight:900;font-size:clamp(32px,3.35vw,66px);color:var(--violet);pointer-events:none;opacity:0;transform:translate(-50%,-50%);will-change:transform,opacity}
+.flight.small{font-size:clamp(27px,2.8vw,55px)}
+.footer{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:8%}
+.rule{font-size:clamp(12px,.95vw,18px);font-weight:800;color:#475569}
+#replay{border:0;border-radius:14px;background:var(--violet);color:#fff;font-weight:900;padding:.75em 1em;cursor:pointer;font-size:clamp(12px,.9vw,17px)}
+#replay:active{transform:scale(.98)}
+@media(max-width:700px){
+  [data-composition-id="solve-3x3"]{width:100vw;height:100svh;aspect-ratio:auto;border-radius:0}
+  .scene-content{padding:5.5vh 4vw 3vh}.stage{border-radius:18px}.phase{padding:5% 3%}
+  .eqline{font-size:clamp(27px,8vw,42px)}.eqline.small{font-size:clamp(24px,6.8vw,36px)}
+  .flight{font-size:clamp(27px,8vw,42px)}.flight.small{font-size:clamp(24px,6.8vw,36px)}
+  .known{position:absolute;right:4vw;top:2vh;z-index:5}.topbar{min-height:13%}
+}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="solve-3x3" data-start="0" data-duration="19" data-width="1920" data-height="1080" data-track-index="0">
+  <div class="scene-content">
+    <div class="topbar">
+      <div>
+        <span class="kicker">SISTEMA 3×3 ESCALONADO</span>
+        <h1>Resolvendo de baixo para cima</h1>
+      </div>
+      <div class="known" aria-label="valores encontrados">
+        <span class="chip" id="chip-z">z = 3</span>
+        <span class="chip" id="chip-y">y = 2</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <section class="phase" id="phase-z">
+        <div class="phase-label">1º — PEGUE A EQUAÇÃO COM UMA INCÓGNITA</div>
+        <div class="eqline" id="z1"><span id="z-coef">3</span><span>z</span><span>=</span><span>9</span></div>
+        <div class="eqline" id="z2"><span>z</span><span>=</span><span class="frac"><span>9</span><span id="z-den">3</span></span></div>
+        <div class="eqline result" id="z3"><span>z</span><span>=</span><span>3</span></div>
+        <div class="explain" id="z-note">O 3 que multiplicava passa dividindo na linha de baixo.</div>
+      </section>
+
+      <section class="phase" id="phase-y">
+        <div class="phase-label">2º — SUBSTITUA z = 3 NA SEGUNDA EQUAÇÃO</div>
+        <div class="eqline small" id="y1"><span>2y</span><span>+</span><span id="y-z">z</span><span>=</span><span>7</span></div>
+        <div class="eqline small" id="y2"><span>2y</span><span>+</span><span>(</span><span id="y-sub3">3</span><span>)</span><span>=</span><span>7</span></div>
+        <div class="eqline small" id="y3"><span>2y</span><span>+</span><span id="y-plus3">3</span><span>=</span><span>7</span></div>
+        <div class="eqline small" id="y4"><span>2y</span><span>=</span><span>7</span><span>−</span><span id="y-minus3">3</span></div>
+        <div class="eqline small" id="y5"><span>2y</span><span>=</span><span>4</span></div>
+        <div class="eqline small" id="y6"><span>y</span><span>=</span><span class="frac"><span>4</span><span id="y-den2">2</span></span></div>
+        <div class="eqline small result" id="y7"><span>y</span><span>=</span><span>2</span></div>
+        <div class="explain" id="y-note">Substitua, passe o termo para o outro lado e depois divida.</div>
+      </section>
+
+      <section class="phase" id="phase-x">
+        <div class="phase-label">3º — SUBSTITUA y = 2 E z = 3 NA PRIMEIRA EQUAÇÃO</div>
+        <div class="eqline small" id="x1"><span>x</span><span>+</span><span id="x-y">y</span><span>+</span><span id="x-z">z</span><span>=</span><span>6</span></div>
+        <div class="eqline small" id="x2"><span>x</span><span>+</span><span>(</span><span id="x-sub2">2</span><span>)</span><span>+</span><span>(</span><span id="x-sub3">3</span><span>)</span><span>=</span><span>6</span></div>
+        <div class="eqline small" id="x3"><span>x</span><span>+</span><span>2</span><span>+</span><span>3</span><span>=</span><span>6</span></div>
+        <div class="eqline small" id="x4"><span>x</span><span>+</span><span id="x-plus5">5</span><span>=</span><span>6</span></div>
+        <div class="eqline small" id="x5"><span>x</span><span>=</span><span>6</span><span>−</span><span id="x-minus5">5</span></div>
+        <div class="eqline small result" id="x6"><span>x</span><span>=</span><span>1</span></div>
+        <div class="explain" id="x-note">Com y e z substituídos, resta somente x.</div>
+      </section>
+
+      <span class="flight" id="fly-3-div">3</span>
+      <span class="flight small" id="fly-z3">3</span>
+      <span class="flight small" id="fly-plus3">+3</span>
+      <span class="flight small" id="fly-2-div">2</span>
+      <span class="flight small" id="fly-y2">2</span>
+      <span class="flight small" id="fly-z3-x">3</span>
+      <span class="flight small" id="fly-plus5">+5</span>
+    </div>
+
+    <div class="footer">
+      <div class="rule">Cada transformação aparece em uma nova linha abaixo.</div>
+      <button id="replay" type="button" data-layout-ignore>▶ Repetir animação</button>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+
+function center(el, root){
+  const r=el.getBoundingClientRect(), rr=root.getBoundingClientRect();
+  return {x:r.left-rr.left+r.width/2, y:r.top-rr.top+r.height/2};
+}
+function placeFlight(tl, flight, from, root, at){
+  const p=center(from,root);
+  tl.set(flight,{x:p.x,y:p.y,opacity:1},at);
+}
+function flyTo(tl, flight, to, root, at, dur=.72){
+  const p=center(to,root);
+  tl.to(flight,{x:p.x,y:p.y,duration:dur,ease:'power3.inOut'},at)
+    .to(flight,{scale:1.16,duration:.18,ease:'power2.out'},at+dur*.45)
+    .to(flight,{scale:1,duration:.18,ease:'power2.in'},at+dur*.66)
+    .to(flight,{opacity:0,duration:.12},at+dur-.05);
+}
+
+const root=document.getElementById('root');
+const tl=gsap.timeline({paused:true,defaults:{ease:'power2.out'}});
+
+// Z — as linhas ficam, e a transformação nasce abaixo.
+tl.set('#phase-z',{opacity:1},0)
+  .from('#z1',{y:-18,opacity:0,duration:.45},0.15)
+  .from('#z-note',{opacity:0,duration:.35},0.4)
+  .from('#z2',{y:-22,opacity:0,duration:.45},1.25);
+placeFlight(tl,document.getElementById('fly-3-div'),document.getElementById('z-coef'),root,1.0);
+flyTo(tl,document.getElementById('fly-3-div'),document.getElementById('z-den'),root,1.0,.9);
+tl.from('#z3',{y:-22,opacity:0,duration:.45},2.35)
+  .to('#z1,#z2',{opacity:.34,duration:.3},2.7)
+  .to('#chip-z',{opacity:1,scale:1,duration:.35},3.05)
+  .to('#phase-z',{opacity:0,x:-80,duration:.45,ease:'power2.in'},3.6);
+
+// Y — z=3 viaja para o lugar do z.
+tl.set('#phase-y',{opacity:1,x:70},3.75)
+  .to('#phase-y',{x:0,duration:.45},3.75)
+  .from('#y1',{y:-18,opacity:0,duration:.38},3.9)
+  .from('#y2',{y:-18,opacity:0,duration:.4},4.75);
+placeFlight(tl,document.getElementById('fly-z3'),document.getElementById('chip-z'),root,4.45);
+flyTo(tl,document.getElementById('fly-z3'),document.getElementById('y-sub3'),root,4.45,.78);
+tl.from('#y3',{y:-18,opacity:0,duration:.38},5.45)
+  .from('#y4',{y:-18,opacity:0,duration:.42},6.25);
+placeFlight(tl,document.getElementById('fly-plus3'),document.getElementById('y-plus3'),root,6.0);
+flyTo(tl,document.getElementById('fly-plus3'),document.getElementById('y-minus3'),root,6.0,.85);
+tl.from('#y5',{y:-18,opacity:0,duration:.38},7.2)
+  .from('#y6',{y:-18,opacity:0,duration:.42},7.95);
+placeFlight(tl,document.getElementById('fly-2-div'),document.querySelector('#y5 span:first-child'),root,7.7);
+flyTo(tl,document.getElementById('fly-2-div'),document.getElementById('y-den2'),root,7.7,.82);
+tl.from('#y7',{y:-18,opacity:0,duration:.42},8.95)
+  .from('#y-note',{opacity:0,duration:.35},9.2)
+  .to('#y1,#y2,#y3,#y4,#y5,#y6',{opacity:.22,duration:.35},9.35)
+  .to('#chip-y',{opacity:1,scale:1,duration:.35},9.65)
+  .to('#phase-y',{opacity:0,x:-80,duration:.45,ease:'power2.in'},10.15);
+
+// X — 2 e 3 viajam dos valores conhecidos para a nova linha.
+tl.set('#phase-x',{opacity:1,x:70},10.25)
+  .to('#phase-x',{x:0,duration:.45},10.25)
+  .from('#x1',{y:-18,opacity:0,duration:.4},10.4)
+  .from('#x2',{y:-18,opacity:0,duration:.42},11.3);
+placeFlight(tl,document.getElementById('fly-y2'),document.getElementById('chip-y'),root,10.95);
+placeFlight(tl,document.getElementById('fly-z3-x'),document.getElementById('chip-z'),root,11.05);
+flyTo(tl,document.getElementById('fly-y2'),document.getElementById('x-sub2'),root,10.95,.82);
+flyTo(tl,document.getElementById('fly-z3-x'),document.getElementById('x-sub3'),root,11.05,.82);
+tl.from('#x3',{y:-18,opacity:0,duration:.38},12.15)
+  .from('#x4',{y:-18,opacity:0,duration:.38},12.9)
+  .from('#x5',{y:-18,opacity:0,duration:.42},13.75);
+placeFlight(tl,document.getElementById('fly-plus5'),document.getElementById('x-plus5'),root,13.5);
+flyTo(tl,document.getElementById('fly-plus5'),document.getElementById('x-minus5'),root,13.5,.88);
+tl.from('#x6',{y:-18,opacity:0,duration:.45},14.85)
+  .from('#x-note',{opacity:0,duration:.35},15.15)
+  .to('#x1,#x2,#x3,#x4,#x5',{opacity:.22,duration:.35},15.3)
+  .to('#x6',{scale:1.12,duration:.28,ease:'back.out(1.7)'},15.65)
+  .to('#x6',{scale:1,duration:.22},15.93);
+
+window.__timelines['solve-3x3']=tl;
+
+document.getElementById('replay').addEventListener('click',()=>tl.restart());
+requestAnimationFrame(()=>tl.play());
+</script>
+</body>
+</html>
