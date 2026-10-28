@@ -12,5 +12,5 @@ Arquivos estáticos servidos pelo GitHub Pages. A função orbita-2910 atende a 
 
 Fontes: licenças em FONT-LICENSES.txt. Música e efeitos originais sintetizados no navegador, com botão para silenciar.
 
-Na competição, cada acerto abre automaticamente o próximo resgate; o último abre o resultado. O treinamento mantém avanço manual para permitir leitura.
+Na competição, cada acerto abre automaticamente o próximo resgate; o último abre o resultado. O treinamento também avança automaticamente após cada acerto; não há botão Próxima cápsula.
 
