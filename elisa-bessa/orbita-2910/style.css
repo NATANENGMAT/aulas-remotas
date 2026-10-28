@@ -8,3 +8,5 @@ body{background:#fff8f3;color:#4b2229;background-image:linear-gradient(#b72c4210
 
 .ranklist li:nth-child(2){background:#f0edf0;border-radius:10px}.ranklist li:nth-child(3){background:#f5e4db;border-radius:10px}.ranklist .position{font-size:21px}.ranklist li.mine{box-shadow:inset 4px 0 #b52341;background:#f8dce2}
 
+.activity-date{margin:0 0 9px;color:#94243e;font-size:16px;line-height:1.4}.ranked-badge{display:inline-block;margin:0 0 17px;padding:8px 10px;border-radius:7px;background:#b52341;color:#fff8f3;font:9px Mono,monospace;line-height:1.6;letter-spacing:.35px}
+
