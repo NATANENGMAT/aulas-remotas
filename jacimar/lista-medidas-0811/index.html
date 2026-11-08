@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fbf8f1"><title>Lista ENEM · Média, Mediana e Moda · Jacimar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap">
+<style>
+/* Layout: folha de caderno quadriculada, uma coluna de questões como prova impressa, gabarito no fim */
+:root {
+  --paper: #fbf8f1; --grid: #efe7d6; --ink: #1f2a33; --muted: #56636d; --line: #d8cfbd;
+  --card: #ffffff; --accent: #d9480f; --ok: #0f8a79; --mark: #ffe27a;
+  --c1: #0f9d8a; --c2: #e19a00; --c3: #2f6fdb; --c4: #e4572e;
+  --sel: #e8f0ff; --okbg: #e3f6f2; --errbg: #fde9e3; --mark-ink: #ffd36b;
+  --display: "Outfit", "Trebuchet MS", sans-serif; --body: "Outfit", "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #171c21; --grid: #20272e; --ink: #ecf0f2; --muted: #a7b2ba; --line: #36414b;
+  --card: #1e252c; --accent: #ff7a3d; --ok: #3cc8b0; --mark: #6b5a12;
+  --c1: #2fbfa9; --c2: #f0b232; --c3: #5d92f0; --c4: #f07a55; --sel: #1d2b44; --okbg: #143630; --errbg: #3a2019; --mark-ink: #ffd36b; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --paper: #171c21; --grid: #20272e; --ink: #ecf0f2; --muted: #a7b2ba; --line: #36414b;
+  --card: #1e252c; --accent: #ff7a3d; --ok: #3cc8b0; --mark: #6b5a12;
+  --c1: #2fbfa9; --c2: #f0b232; --c3: #5d92f0; --c4: #f07a55; --sel: #1d2b44; --okbg: #143630; --errbg: #3a2019; --mark-ink: #ffd36b; color-scheme: dark; }
+body { background-color: var(--paper); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55;
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 28px 28px; }
+.wrap { max-width: 780px; margin: 0 auto; padding-block: 40px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header { display: grid; gap: 10px; margin-bottom: 28px; }
+.eyebrow { font-family: var(--display); font-size: 14px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+h1 { font-family: var(--display); font-size: clamp(30px, 6vw, 44px); line-height: 1.1; margin: 0; text-wrap: balance; }
+h1 span { background: linear-gradient(transparent 58%, var(--mark) 58%); }
+.meta { color: var(--muted); margin: 0; }
+.aluno { display: flex; flex-wrap: wrap; gap: 10px 24px; margin-top: 6px; }
+.aluno div { flex: 1 1 220px; border-bottom: 2px solid var(--line); padding-bottom: 4px; color: var(--muted); font-size: 15px; }
+.q { background: var(--card); border: 2px solid var(--ink); border-radius: 16px; padding: 22px 24px 20px; margin-bottom: 22px; display: grid; gap: 12px; }
+.qh { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.qn { font-family: var(--display); font-weight: 700; font-size: 20px; }
+.tag { font-size: 13px; font-weight: 700; color: var(--accent); border: 1.5px solid var(--accent); border-radius: 999px; padding: 1px 10px; }
+.q p { margin: 0; max-width: 66ch; }
+figure { margin: 4px 0; overflow-x: auto; }
+figure svg { display: block; width: 100%; max-width: 440px; height: auto; }
+figcaption { font-size: 14px; color: var(--muted); margin-top: 4px; }
+table { border-collapse: collapse; font-variant-numeric: tabular-nums; min-width: 260px; }
+th, td { border-bottom: 1.5px solid var(--line); padding: 6px 18px; text-align: center; }
+th { color: var(--accent); border-bottom: 2.5px solid var(--accent); font-family: var(--display); }
+tr.tot td { font-weight: 700; color: var(--ok); border-bottom: none; }
+ol.alt { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+ol.alt li { display: flex; gap: 10px; align-items: baseline; }
+ol.alt b { font-family: var(--display); display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; background: var(--ink); color: var(--paper); font-size: 14px; flex: none; }
+.ax { stroke: var(--ink); stroke-width: 2.5; }
+.gl { stroke: var(--line); stroke-width: 1; stroke-dasharray: 4 4; }
+.lb { fill: var(--muted); font: 13px var(--body); }
+.vl { fill: var(--ink); font: 700 14px var(--display); }
+.f1 { fill: var(--c1); } .f2 { fill: var(--c2); } .f3 { fill: var(--c3); } .f4 { fill: var(--c4); }
+.ln { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.dt { fill: var(--accent); }
+.fr { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1.05; margin: 0 3px; font-weight: 700; }
+.fr > span:first-child { border-bottom: 2px solid currentColor; padding: 0 4px 1px; }
+.fr > span:last-child { padding: 1px 4px 0; }
+.gab { margin-top: 36px; }
+.gab h2 { font-family: var(--display); font-size: 28px; margin: 0 0 12px; }
+.chave { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; margin-bottom: 18px; }
+.chave div { background: var(--card); border: 2px solid var(--ink); border-radius: 10px; text-align: center; padding: 6px 0; font-family: var(--display); font-weight: 700; }
+.chave div span { color: var(--ok); }
+details { background: var(--card); border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 16px; margin-bottom: 10px; }
+summary { cursor: pointer; font-family: var(--display); font-weight: 700; }
+summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+details p { margin: 10px 0 2px; }
+.res { color: var(--ok); font-weight: 700; }
+
+.mapa { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 26px; }
+.mm { background: var(--card); border: 2px solid var(--k, var(--ink)); border-radius: 14px; padding: 10px 14px; min-width: 0; }
+.mm h3 { margin: 0 0 4px; font-family: var(--display); font-size: 17px; color: var(--k); }
+.mm p { margin: 0; font-size: 15px; }
+.mm-c { grid-column: 1 / -1; background: var(--ink); color: var(--paper); border-color: var(--ink); text-align: center; display: grid; gap: 2px; padding: 14px; }
+.mm-c b { font-family: var(--display); font-size: 22px; letter-spacing: .04em; text-transform: uppercase; }
+.mm-c i { font-style: normal; color: var(--mark-ink); font-weight: 700; }
+@media (max-width: 560px) { .mapa { grid-template-columns: 1fr; } }
+ol.alt li { cursor: pointer; border: 2px solid var(--line); border-radius: 10px; padding: 6px 10px; transition: border-color .15s, background .15s; align-items: center; }
+ol.alt li:hover { border-color: var(--ink); }
+ol.alt li:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+ol.alt li[aria-checked="true"] { border-color: var(--c3); background: var(--sel); }
+ol.alt li[aria-checked="true"] b { background: var(--c3); }
+ol.alt li.certa { border-color: var(--ok); background: var(--okbg); }
+ol.alt li.certa b { background: var(--ok); }
+ol.alt li.errada { border-color: var(--c4); background: var(--errbg); }
+ol.alt li.errada b { background: var(--c4); }
+.q.corrigida .qn::after { content: attr(data-r); margin-left: 8px; font-size: 14px; }
+.fim { display: grid; gap: 10px; margin: 6px 0 10px; }
+.fim p { margin: 0; color: var(--muted); }
+.bt { display: flex; flex-wrap: wrap; gap: 10px; }
+button { font: 700 17px var(--display); border: 2px solid var(--ink); background: var(--ink); color: var(--paper); border-radius: 12px; padding: 10px 22px; cursor: pointer; }
+button.sec { background: var(--card); color: var(--ink); }
+button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+#placar { font: 700 24px var(--display); color: var(--ink); }
+
+.login { display: grid; gap: 14px; max-width: 520px; }
+.card-login { display: grid; gap: 8px; background: var(--card); border: 2px solid var(--ink); border-radius: 16px; padding: 20px; }
+.card-login label { font-family: var(--display); font-weight: 700; }
+select { font: 17px var(--body); padding: 12px; border-radius: 10px; border: 2px solid var(--line); background: var(--paper); color: var(--ink); min-height: 48px; }
+select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.card-login button { margin-top: 8px; }
+#loginStatus, #status { margin: 0; color: var(--accent); min-height: 1em; }
+.pequeno { font-size: 15px; } .pequeno a { color: var(--ok); }
+.dados { font-family: var(--display); font-size: 22px; font-weight: 700; letter-spacing: .02em; }
+.quem { margin: 0; font-family: var(--display); font-weight: 700; color: var(--ok); }
+.quem button { margin-left: 10px; padding: 4px 12px; font-size: 14px; }
+button:disabled { opacity: .55; cursor: wait; }
+@media (max-width: 480px) { .q { padding: 18px 16px; } th, td { padding: 6px 10px; } }
+</style>
+</head><body>
+
+<div class="wrap">
+<section class="login" id="login">
+  <div class="eyebrow">Aulão ENEM · Matemática · Prof. Natanael</div>
+  <h1>Lista: <span>Média, Mediana e Moda</span></h1>
+  <p class="meta">Escola Jacimar · 3º 1 e 3º 2. Escolha sua turma e seu nome para começar.</p>
+  <form id="identify" class="card-login">
+    <label for="classSelect">Sua turma</label>
+    <select id="classSelect" required><option value="">Selecione a turma</option><option value="3º T1">3º 1</option><option value="3º T2">3º 2</option></select>
+    <label for="studentSelect">Seu nome</label>
+    <select id="studentSelect" required disabled><option value="">Selecione a turma primeiro</option></select>
+    <p id="loginStatus" role="status"></p>
+    <button type="submit" id="enter">Começar a lista →</button>
+  </form>
+  <p class="meta pequeno">Sem prazo final. Você pode entregar de novo; vale a última entrega. <a href="https://natanengmat.github.io/aulas-remotas/painel/jacimar.html" target="_blank" rel="noopener">Consultar painel de entregas ↗</a></p>
+</section>
+<div id="conteudo" hidden>
+<header>
+  <div class="eyebrow">Aulão ENEM · Matemática · Prof. Natanael</div>
+  <h1>Lista: <span>Média, Mediana e Moda</span></h1>
+  <p class="meta">10 questões no estilo do ENEM, com contas rápidas. Toque na alternativa para marcar e, no fim, toque em <b>Entregar</b>.</p>
+  <p class="quem" id="quem" hidden></p>
+</header>
+<section class="mapa" aria-label="Mapa mental">
+  <div class="mm mm-c"><b>Medidas de tendência central</b><span>A média <i>equilibra</i>. A mediana <i>divide</i>. A moda <i>repete</i>.</span></div>
+  <div class="mm" style="--k: var(--accent)"><h3>Média</h3><p>Média = <span class="fr"><span>soma dos valores</span><span>quantidade</span></span> &nbsp; É o ponto de equilíbrio.</p></div>
+  <div class="mm" style="--k: var(--accent)"><h3>Truque do total</h3><p>soma = média × quantidade. Ex.: 5 notas com média 7 somam 35.</p></div>
+  <div class="mm" style="--k: var(--c3)"><h3>Média ponderada</h3><p><span class="fr"><span>nota × peso + nota × peso</span><span>soma dos pesos</span></span> &nbsp; Divida pela <b>soma dos pesos</b>.</p></div>
+  <div class="mm" style="--k: var(--ok)"><h3>Mediana</h3><p><b>Ordene</b> primeiro! É o valor do meio. Quantidade par: média dos dois do meio.</p></div>
+  <div class="mm" style="--k: var(--c2)"><h3>Moda</h3><p>O valor que <b>mais se repete</b>. Pode ter duas (bimodal) ou nenhuma.</p></div>
+  <div class="mm" style="--k: var(--c4)"><h3>Valor extremo</h3><p>Puxa a média; a mediana quase não muda. Salários e imóveis: use a mediana.</p></div>
+  <div class="mm" style="--k: var(--muted)"><h3>Quando usar</h3><p>Média: dados sem extremos. Mediana: com extremos. Moda: o mais comum.</p></div>
+</section>
+<section class="q" id="q1">
+  <div class="qh"><span class="qn">Questão 01</span><span class="tag">Média</span></div>
+  <p>Ana anotou quanto gastou com lanche na escola em cada dia de uma semana.</p>
+  <figure><table><tr><th>Dia</th><th>Gasto (R$)</th></tr><tr><td>segunda</td><td>6</td></tr><tr><td>terça</td><td>8</td></tr><tr><td>quarta</td><td>5</td></tr><tr><td>quinta</td><td>9</td></tr><tr><td>sexta</td><td>7</td></tr></table></figure>
+  <p>Qual foi o gasto <b>médio</b> por dia?</p>
+  <ol class="alt"><li><b>A</b>R$ 5,00</li><li><b>B</b>R$ 5,50</li><li><b>C</b>R$ 6,00</li><li><b>D</b>R$ 7,00</li><li><b>E</b>R$ 35,00</li></ol>
+</section>
+<section class="q" id="q2">
+  <div class="qh"><span class="qn">Questão 02</span><span class="tag">Truque do total</span></div>
+  <p>A média de idade de quatro irmãos é 12 anos.</p>
+  <p>Qual é a <b>soma</b> das idades dos quatro irmãos?</p>
+  <ol class="alt"><li><b>A</b>3 anos</li><li><b>B</b>12 anos</li><li><b>C</b>16 anos</li><li><b>D</b>40 anos</li><li><b>E</b>48 anos</li></ol>
+</section>
+<section class="q" id="q3">
+  <div class="qh"><span class="qn">Questão 03</span><span class="tag">Média · novo valor</span></div>
+  <p>Cinco alunos fizeram um simulado e a média deles foi 6. Um sexto aluno fez a mesma prova depois e tirou 12.</p>
+  <p>Qual passou a ser a média dos seis alunos?</p>
+  <ol class="alt"><li><b>A</b>6</li><li><b>B</b>6,5</li><li><b>C</b>7</li><li><b>D</b>8</li><li><b>E</b>9</li></ol>
+</section>
+<section class="q" id="q4">
+  <div class="qh"><span class="qn">Questão 04</span><span class="tag">Média ponderada</span></div>
+  <p>Na escola de Bia, a nota do bimestre é a média ponderada de duas avaliações.</p>
+  <figure><table><tr><th>Avaliação</th><th>Nota</th><th>Peso</th></tr><tr><td>prova</td><td>9</td><td>2</td></tr><tr><td>trabalho</td><td>6</td><td>1</td></tr></table></figure>
+  <p>Qual foi a nota de Bia no bimestre?</p>
+  <ol class="alt"><li><b>A</b>7,5</li><li><b>B</b>8</li><li><b>C</b>8,5</li><li><b>D</b>9</li><li><b>E</b>24</li></ol>
+</section>
+<section class="q" id="q5">
+  <div class="qh"><span class="qn">Questão 05</span><span class="tag">Mediana · quantidade ímpar</span></div>
+  <p>Sete atletas correram 3 km. Os tempos, em minutos, foram anotados na ordem de chegada ao vestiário:</p>
+  <p class="dados">12 · 9 · 15 · 10 · 8 · 14 · 11</p>
+  <p>Qual é a <b>mediana</b> dos tempos?</p>
+  <ol class="alt"><li><b>A</b>10 min</li><li><b>B</b>11 min</li><li><b>C</b>12 min</li><li><b>D</b>14 min</li><li><b>E</b>15 min</li></ol>
+</section>
+<section class="q" id="q6">
+  <div class="qh"><span class="qn">Questão 06</span><span class="tag">Mediana · quantidade par</span></div>
+  <p>O preço de um mesmo lanche, em reais, foi pesquisado em seis lanchonetes de um bairro:</p>
+  <p class="dados">14 · 10 · 20 · 12 · 18 · 16</p>
+  <p>Qual é a <b>mediana</b> desses preços?</p>
+  <ol class="alt"><li><b>A</b>R$ 12,00</li><li><b>B</b>R$ 13,00</li><li><b>C</b>R$ 14,00</li><li><b>D</b>R$ 15,00</li><li><b>E</b>R$ 16,00</li></ol>
+</section>
+<section class="q" id="q7">
+  <div class="qh"><span class="qn">Questão 07</span><span class="tag">Moda</span></div>
+  <p>Um time de futsal vai comprar tênis para os 11 jogadores. As numerações são:</p>
+  <p class="dados">36 · 38 · 37 · 38 · 39 · 38 · 36 · 40 · 37 · 38 · 35</p>
+  <p>Qual numeração o time deve comprar em <b>maior quantidade</b>?</p>
+  <ol class="alt"><li><b>A</b>36</li><li><b>B</b>37</li><li><b>C</b>38</li><li><b>D</b>39</li><li><b>E</b>não há moda</li></ol>
+</section>
+<section class="q" id="q8">
+  <div class="qh"><span class="qn">Questão 08</span><span class="tag">Moda no gráfico</span></div>
+  <p>O gráfico mostra quantos livros cada aluno de uma turma de 20 leu no ano.</p>
+  <figure><svg viewBox="0 0 360 220" role="img" aria-label="Livros lidos: 0 livros, 4 alunos; 1 livro, 7; 2 livros, 7; 3 livros, 2">
+    <line class="ax" x1="30" y1="180" x2="340" y2="180"/><line class="ax" x1="30" y1="30" x2="30" y2="180"/>
+    <rect class="f3" x="50" y="108" width="50" height="72"/><rect class="f3" x="120" y="54" width="50" height="126"/><rect class="f3" x="190" y="54" width="50" height="126"/><rect class="f3" x="260" y="144" width="50" height="36"/>
+    <text class="vl" x="75" y="102" text-anchor="middle">4</text><text class="vl" x="145" y="48" text-anchor="middle">7</text><text class="vl" x="215" y="48" text-anchor="middle">7</text><text class="vl" x="285" y="138" text-anchor="middle">2</text>
+    <text class="lb" x="75" y="200" text-anchor="middle">0</text><text class="lb" x="145" y="200" text-anchor="middle">1</text><text class="lb" x="215" y="200" text-anchor="middle">2</text><text class="lb" x="285" y="200" text-anchor="middle">3</text>
+    <text class="lb" x="185" y="216" text-anchor="middle">livros lidos</text>
+  </svg></figure>
+  <p>Qual é a <b>moda</b> do número de livros lidos?</p>
+  <ol class="alt"><li><b>A</b>1 e 2 livros</li><li><b>B</b>apenas 1 livro</li><li><b>C</b>apenas 2 livros</li><li><b>D</b>7 livros</li><li><b>E</b>não há moda</li></ol>
+</section>
+<section class="q" id="q9">
+  <div class="qh"><span class="qn">Questão 09</span><span class="tag">Valor extremo</span></div>
+  <p>Uma imobiliária anunciou cinco apartamentos em um bairro. Os preços, em milhares de reais, estão no gráfico.</p>
+  <figure><svg viewBox="0 0 380 230" role="img" aria-label="Preços: 200, 220, 240, 250 e 1590 mil reais">
+    <line class="ax" x1="30" y1="190" x2="370" y2="190"/>
+    <rect class="f3" x="50" y="171" width="44" height="19"/><rect class="f3" x="110" y="169" width="44" height="21"/><rect class="f3" x="170" y="167" width="44" height="23"/><rect class="f3" x="230" y="166" width="44" height="24"/><rect class="f4" x="290" y="40" width="44" height="150"/>
+    <text class="vl" x="72" y="163" text-anchor="middle">200</text><text class="vl" x="132" y="161" text-anchor="middle">220</text><text class="vl" x="192" y="159" text-anchor="middle">240</text><text class="vl" x="252" y="158" text-anchor="middle">250</text><text class="vl" x="312" y="32" text-anchor="middle">1.590</text>
+    <text class="lb" x="72" y="208" text-anchor="middle">A</text><text class="lb" x="132" y="208" text-anchor="middle">B</text><text class="lb" x="192" y="208" text-anchor="middle">C</text><text class="lb" x="252" y="208" text-anchor="middle">D</text><text class="lb" x="312" y="208" text-anchor="middle">E</text>
+    <text class="lb" x="200" y="226" text-anchor="middle">apartamentos (preço em mil R$)</text>
+  </svg></figure>
+  <p>Qual medida representa melhor o preço <b>típico</b> desses apartamentos, e qual é o seu valor?</p>
+  <ol class="alt"><li><b>A</b>a média, 500 mil</li><li><b>B</b>a média, 240 mil</li><li><b>C</b>a moda, 200 mil</li><li><b>D</b>a mediana, 500 mil</li><li><b>E</b>a mediana, 240 mil</li></ol>
+</section>
+<section class="q" id="q10">
+  <div class="qh"><span class="qn">Questão 10</span><span class="tag">Mediana na tabela</span></div>
+  <p>Uma pesquisa perguntou a 30 famílias quantos filhos elas têm.</p>
+  <figure><table><tr><th>Filhos</th><th>Famílias</th></tr><tr><td>0</td><td>6</td></tr><tr><td>1</td><td>10</td></tr><tr><td>2</td><td>9</td></tr><tr><td>3</td><td>5</td></tr><tr class="tot"><td>Total</td><td>30</td></tr></table></figure>
+  <p>Qual é a <b>mediana</b> do número de filhos?</p>
+  <ol class="alt"><li><b>A</b>1</li><li><b>B</b>1,5</li><li><b>C</b>2</li><li><b>D</b>2,5</li><li><b>E</b>3</li></ol>
+</section>
+<section class="fim" id="fim">
+  <p id="falta">Marque as 10 questões e toque em Entregar.</p>
+  <div class="bt"><button id="entregar" type="button">Entregar lista →</button><button id="limpar" type="button" class="sec">Limpar respostas</button></div>
+  <p id="status" role="status"></p>
+  <p id="placar" hidden></p>
+</section>
+<section class="gab" id="gabarito" hidden>
+  <h2>Gabarito comentado</h2>
+  <div class="chave" id="chave"></div>
+  <div id="resolucoes"></div>
+</section>
+</div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const API = 'https://jzepdmolnoobgbgdavyf.supabase.co/functions/v1/lista-medidas-0811', KEY = 'sb_publishable_wjcJ0tnDxK9ucEu3B3vchQ_CtMn6R8M';
+  const $ = (id) => document.getElementById(id);
+  let identity = null, resp = {}, sending = false, request = 0;
+  const qs = [...document.querySelectorAll('section.q')];
+  const time = (d) => new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Manaus', dateStyle: 'short', timeStyle: 'short' }).format(new Date(d));
+  async function api(route, body) {
+    const r = await fetch(API + '/' + route, { method: body ? 'POST' : 'GET', headers: { apikey: KEY, ...(body ? { 'Content-Type': 'application/json' } : {}), ...(identity ? { 'x-session': identity.token } : {}) }, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(20000) });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw Error(d.error || 'Não foi possível conectar. Tente novamente.');
+    return d;
+  }
+  const store = () => 'lista-medidas-0811-' + (identity ? identity.aluno.id : 'x');
+  const load = () => { try { const v = JSON.parse(localStorage.getItem(store()) || 'null'); return v && typeof v === 'object' ? v : {}; } catch (e) { return {}; } };
+  const save = () => { try { localStorage.setItem(store(), JSON.stringify({ resp, pend: pending })); } catch (e) {} };
+  let pending = null;
+
+  // ---- identificação ----
+  const turma = $('classSelect'), aluno = $('studentSelect'), lst = $('loginStatus');
+  async function names() {
+    const id = ++request, t = turma.value; aluno.disabled = true;
+    aluno.replaceChildren(new Option(t ? 'Carregando nomes…' : 'Selecione a turma primeiro', '')); lst.textContent = '';
+    if (!t) return;
+    try { const d = await api('alunos?turma=' + encodeURIComponent(t)); if (id !== request) return;
+      aluno.replaceChildren(new Option('Selecione seu nome', ''), ...d.alunos.map((a) => new Option(a.nome, a.id))); aluno.disabled = false;
+    } catch (e) { if (id === request) lst.textContent = e.message + ' Escolha a turma de novo.'; }
+  }
+  turma.addEventListener('change', names);
+  $('identify').addEventListener('submit', async (e) => {
+    e.preventDefault(); if (!turma.value || !aluno.value) { lst.textContent = 'Escolha a turma e o seu nome.'; return; }
+    const b = $('enter'); b.disabled = true; lst.textContent = 'Conferindo seu acesso…';
+    try {
+      identity = await api('entrar', { turma: turma.value, aluno_id: aluno.value });
+      const st = load(); resp = st.resp || {}; pending = st.pend || null;
+      $('login').hidden = true; $('conteudo').hidden = false;
+      $('quem').hidden = false; $('quem').textContent = identity.aluno.nome + ' · ' + identity.aluno.turma.replace('º T', 'º ');
+      const tr = document.createElement('button'); tr.type = 'button'; tr.className = 'sec'; tr.textContent = 'Trocar aluno';
+      tr.addEventListener('click', () => location.reload()); $('quem').append(tr);
+      $('status').textContent = identity.entrega ? '✓ Você já entregou em ' + time(identity.entrega.enviada_em) + '. Se entregar de novo, vale a última entrega.' : '';
+      pintar(); window.scrollTo(0, 0);
+    } catch (err) { lst.textContent = err.message; } finally { b.disabled = false; }
+  });
+
+  // ---- marcação ----
+  const falta = $('falta'), placar = $('placar'), gab = $('gabarito');
+  function contar() { const n = Object.keys(resp).length; falta.textContent = n < 10 ? `Você marcou ${n} de 10. Marque todas para entregar.` : 'Tudo marcado! Toque em Entregar lista.'; }
+  function pintar() { qs.forEach((q) => q.querySelectorAll('ol.alt li').forEach((li) => li.setAttribute('aria-checked', resp[q.id] === li.dataset.l ? 'true' : 'false'))); contar(); }
+  function limparCorrecao() {
+    document.querySelectorAll('ol.alt li').forEach((li) => li.classList.remove('certa', 'errada'));
+    qs.forEach((q) => { q.classList.remove('corrigida'); q.querySelector('.qn').removeAttribute('data-r'); });
+    placar.hidden = true; gab.hidden = true;
+  }
+  qs.forEach((q) => {
+    const ol = q.querySelector('ol.alt'); ol.setAttribute('role', 'radiogroup');
+    ol.querySelectorAll('li').forEach((li) => {
+      li.dataset.l = li.querySelector('b').textContent.trim(); li.setAttribute('role', 'radio'); li.tabIndex = 0;
+      const marcar = () => { if (sending) return; resp[q.id] = li.dataset.l; pending = null; save(); limparCorrecao(); pintar(); };
+      li.addEventListener('click', marcar);
+      li.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); marcar(); } });
+    });
+  });
+  function corrigir(r) {
+    const g = r.gabarito;
+    qs.forEach((q, i) => {
+      const certa = g[i], dada = resp[q.id];
+      q.querySelectorAll('ol.alt li').forEach((li) => { li.classList.toggle('certa', li.dataset.l === certa); li.classList.toggle('errada', li.dataset.l === dada && dada !== certa); });
+      q.classList.add('corrigida'); q.querySelector('.qn').setAttribute('data-r', dada === certa ? '✓ acertou' : '✗ errou');
+    });
+    placar.textContent = `Você acertou ${r.acertos} de 10.`; placar.hidden = false;
+    $('chave').replaceChildren(...g.map((l, i) => { const d = document.createElement('div'); d.innerHTML = String(i + 1).padStart(2, '0') + ' <span>' + l + '</span>'; return d; }));
+    $('resolucoes').innerHTML = r.resolucoes.map((h, i) => `<details><summary>Questão ${String(i + 1).padStart(2, '0')} · ${g[i]}</summary><p>${h}</p></details>`).join('');
+    gab.hidden = false;
+  }
+  $('entregar').addEventListener('click', async () => {
+    if (sending) return;
+    const respostas = qs.map((q) => resp[q.id] || '');
+    if (respostas.some((x) => !x)) { $('status').textContent = 'Marque as 10 questões antes de entregar.'; return; }
+    if (!pending) { pending = { envio: crypto.randomUUID(), respostas }; save(); }
+    sending = true; $('entregar').disabled = true; $('status').textContent = 'Registrando sua entrega…';
+    try {
+      const r = await api('entregar', pending);
+      identity.entrega = r; corrigir(r);
+      $('status').textContent = '✓ Lista entregue em ' + time(r.enviada_em) + ' · Manaus. Protocolo: ' + r.protocolo;
+      placar.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch (e) { $('status').textContent = e.message + ' Suas respostas estão salvas; toque em Entregar de novo.'; }
+    finally { sending = false; $('entregar').disabled = false; }
+  });
+  $('limpar').addEventListener('click', () => { resp = {}; pending = null; save(); limparCorrecao(); pintar(); $('status').textContent = ''; });
+})();
+</script>
+</body></html>

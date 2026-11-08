@@ -3,6 +3,7 @@ Atividades de Matemática das escolas Elisa Bessa e Jacimar. Novas atividades s�
 
 - Jacimar: jacimar/media-equilibrio-2110/
 - Jacimar (3º 1 e 3º 2): jacimar/lista-graficos-0511/ · lista ENEM de tabelas e gráficos, entrega pelo servidor `lista-graficos-0511` do Supabase; o gabarito só é enviado ao aluno depois da entrega.
+- Jacimar (3º 1 e 3º 2): jacimar/lista-medidas-0811/ · lista ENEM de média, mediana e moda, servidor `lista-medidas-0811`, no mesmo formato.
 - Painel geral Jacimar: painel/jacimar.html
 - Painel geral Elisa Bessa: painel/elisa-bessa.html
 
