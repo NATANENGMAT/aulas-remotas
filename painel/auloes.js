@@ -2,6 +2,7 @@
 (()=>{
  const $=id=>document.getElementById(id),school=document.body.dataset.escola;
  const sources=[
+  {id:'aulao-lista-probabilidade',url:'https://jzepdmolnoobgbgdavyf.supabase.co/functions/v1/lista-probabilidade/painel',key:'sb_publishable_wjcJ0tnDxK9ucEu3B3vchQ_CtMn6R8M'},
   {id:'aulao-lista-dispersao-0911',url:'https://jzepdmolnoobgbgdavyf.supabase.co/functions/v1/lista-dispersao-0911/painel',key:'sb_publishable_wjcJ0tnDxK9ucEu3B3vchQ_CtMn6R8M'},
   {id:'aulao-lista-medidas-0811',url:'https://jzepdmolnoobgbgdavyf.supabase.co/functions/v1/lista-medidas-0811/painel',key:'sb_publishable_wjcJ0tnDxK9ucEu3B3vchQ_CtMn6R8M'},
   {id:'aulao-lista-graficos-0511',url:'https://jzepdmolnoobgbgdavyf.supabase.co/functions/v1/lista-graficos-0511/painel',key:'sb_publishable_wjcJ0tnDxK9ucEu3B3vchQ_CtMn6R8M'}
