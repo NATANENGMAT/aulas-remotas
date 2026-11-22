@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, height=1080" />
+<title>Função do 2º grau · A máquina ( )²</title>
+<script src="assets/gsap.min.js"></script>
+<script>if(!window.__hf){document.write('<script src="assets/hyperframe.runtime.iife.js"><\/script>');}</script>
+<style>
+@font-face{font-family:"Patrick Hand";src:url("assets/fonts/patrick.woff2") format("woff2");font-weight:400}
+@font-face{font-family:"Caveat";src:url("assets/fonts/caveat.woff2") format("woff2");font-weight:400 700}
+:root{--ink:#1f2a33;--laranja:#d9480f;--verde:#0f9d8a;--azul:#2f6fdb;--amarelo:#f0a202;--coral:#e4572e;--papel:#fbf8f1;--grade:#cfdcea}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--papel)}
+.deck-root{position:absolute;left:0;top:0;width:1920px;height:1080px}
+.scene{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;color:var(--ink);font-family:"Patrick Hand",cursive;
+ background-color:var(--papel);
+ background-image:linear-gradient(var(--grade) 2px,transparent 2px),linear-gradient(90deg,var(--grade) 2px,transparent 2px);
+ background-size:54px 54px;background-position:0 0}
+.margin{position:absolute;left:150px;top:0;width:4px;height:1080px;background:var(--coral);box-shadow:10px 0 0 rgba(228,87,46,.35)}
+.kicker{position:absolute;left:210px;top:48px;font-size:34px;letter-spacing:.08em;color:var(--azul)}
+h1{position:absolute;left:210px;top:92px;font-weight:400;font-size:96px;line-height:1.05;color:var(--ink)}
+.tray{position:absolute;right:110px;top:70px;display:flex;align-items:center;gap:26px;font-size:36px}
+.trl{color:var(--ink);margin-right:8px}
+.card{display:inline-flex;align-items:center;justify-content:center;min-width:112px;height:112px;padding:0 20px;font-size:76px;background:#fff;border:4px solid var(--ink);border-radius:20px;box-shadow:5px 6px 0 var(--ink)}
+.neg{color:var(--coral)}
+.card .neg{color:#b83214}
+.stage{position:absolute;left:250px;top:330px;width:1500px;height:260px}
+.line{position:absolute;left:0;top:0;display:flex;align-items:center;white-space:nowrap;font-size:168px;line-height:1.1;color:var(--ink)}
+.par{color:var(--azul)}
+.slot{display:inline-block;margin:0 .06em;padding:0 .12em;border:5px dashed var(--laranja);border-radius:18px}
+.num,.num2{color:var(--laranja);display:inline-block}
+.cl{position:relative;color:var(--azul)}
+.sq{position:absolute;left:100%;top:-.12em;font-size:.55em;color:var(--azul)}
+.mul{display:inline-flex;align-items:center;margin-left:.1em}
+.dot{margin:0 .22em;color:var(--ink)}
+.res{display:inline-flex;align-items:center;margin-left:.3em;color:var(--verde)}
+.eq{margin-right:.25em;color:var(--ink)}
+.val{color:var(--verde)}
+.caps{position:absolute;left:250px;top:640px;width:1500px;height:110px}
+.cap{position:absolute;left:0;top:0;width:100%;font-size:62px;line-height:1.1;color:var(--ink)}
+.cap b{font-weight:400;color:var(--laranja)}.cap b.g{color:var(--verde)}.cap b.c{color:var(--coral)}
+.chips{position:absolute;left:250px;top:780px;display:flex;gap:44px}
+.chips.mrow{top:880px}
+.chip{font-size:56px;padding:6px 26px;background:#fff;border:4px solid var(--verde);border-radius:18px;white-space:nowrap}
+.chip b{font-weight:400;color:var(--verde)}
+.chip.mir{border-color:var(--azul)}.chip.mir b{color:var(--azul)}
+.mirlabel{position:absolute;left:250px;top:830px;font-size:34px;color:var(--azul);opacity:0}
+.foot{position:absolute;top:985px;font-size:34px;color:var(--ink)}
+.foot.l{left:210px}.foot.r{right:120px;font-family:"Caveat",cursive;font-size:56px;top:972px;color:var(--laranja)}
+</style>
+</head>
+<body>
+<script type="application/hyperframes-slideshow+json">
+{
+  "slides": [
+    {
+      "sceneId": "maquina-pos",
+      "fragments": [
+        0.2,
+        1.9,
+        3.4,
+        4.7,
+        7.2,
+        8.5,
+        11.0,
+        12.3,
+        13.6
+      ],
+      "notes": "(Ao abrir o slide: espaço vazio ( )², sem número.) [CLIQUE 1] Olhem esse espaço vazio: ( )². Qualquer número pode entrar aqui. Vou escolher o 2. [CLIQUE 2] O expoente 2 quer dizer: multiplica o número por ele mesmo. O 2 aparece nos dois parênteses. [CLIQUE 3] 2 vezes 2 dá 4. Fica anotado embaixo. [CLIQUE 4] Agora o 3: ( 3 ) vezes ( 3 ). [CLIQUE 5] 3 vezes 3 dá 9. [CLIQUE 6] E o 5: ( 5 ) vezes ( 5 ). [CLIQUE 7] 5 vezes 5 dá 25. [CLIQUE 8] Sempre a mesma máquina: o número vezes ele mesmo."
+    },
+    {
+      "sceneId": "maquina-neg",
+      "fragments": [
+        14.6,
+        16.3,
+        17.8,
+        19.1,
+        21.6,
+        22.9,
+        25.4,
+        26.7,
+        28.2
+      ],
+      "notes": "(Ao abrir o slide: espaço vazio ( )², cartões com números negativos.) [CLIQUE 1] E se o número for negativo? Ele entra com o sinal, dentro do parêntese. Vou escolher o menos 2. [CLIQUE 2] Os dois parênteses levam o sinal: ( −2 ) vezes ( −2 ). [CLIQUE 3] Menos vezes menos dá mais. Resultado: 4. [CLIQUE 4] Mesma coisa com o menos 3. [CLIQUE 5] Menos 3 vezes menos 3 dá 9. [CLIQUE 6] E o menos 5? [CLIQUE 7] Dá 25. [CLIQUE 8] Olhem o espelho: 2 e −2 deram 4; 3 e −3 deram 9; 5 e −5 deram 25. Positivo e negativo caem no mesmo lugar. Por isso a parábola é simétrica."
+    }
+  ]
+}
+</script>
+<div id="root" data-composition-id="root" data-root="true" data-start="0" data-duration="29.0" data-width="1920" data-height="1080">
+
+  <div id="maquina-pos" class="clip scene" data-composition-id="maquina-pos" data-label="A máquina ( )²: números positivos" data-start="0" data-duration="14.4" data-width="1920" data-height="1080" data-track-index="0">
+    <div class="margin"></div>
+    <div class="intro kicker">FUNÇÃO DO 2º GRAU · PARTE A</div>
+    <h1 class="intro">A máquina do ( )²</h1>
+    <div class="tray intro"><span class="trl">Escolha um número:</span><span class="card" id="maquina-pos-card0">2</span><span class="card" id="maquina-pos-card1">3</span><span class="card" id="maquina-pos-card2">5</span></div>
+    <div class="stage">
+      <div class="line" data-layout-allow-overlap id="maquina-pos-L0">
+        <span class="par">(</span><span class="slot" id="maquina-pos-slot0"><span class="num" id="maquina-pos-num0">2</span></span><span class="cl">)<span class="sq" id="maquina-pos-sq0">2</span></span><span class="mul" id="maquina-pos-mul0"><span class="dot">·</span><span class="par">(</span><span class="num2" id="maquina-pos-n20">2</span><span class="par">)</span></span><span class="res" id="maquina-pos-res0"><span class="eq">=</span><span class="val">4</span></span>
+      </div>
+      <div class="line" data-layout-allow-overlap id="maquina-pos-L1">
+        <span class="par">(</span><span class="slot" id="maquina-pos-slot1"><span class="num" id="maquina-pos-num1">3</span></span><span class="cl">)<span class="sq" id="maquina-pos-sq1">2</span></span><span class="mul" id="maquina-pos-mul1"><span class="dot">·</span><span class="par">(</span><span class="num2" id="maquina-pos-n21">3</span><span class="par">)</span></span><span class="res" id="maquina-pos-res1"><span class="eq">=</span><span class="val">9</span></span>
+      </div>
+      <div class="line" data-layout-allow-overlap id="maquina-pos-L2">
+        <span class="par">(</span><span class="slot" id="maquina-pos-slot2"><span class="num" id="maquina-pos-num2">5</span></span><span class="cl">)<span class="sq" id="maquina-pos-sq2">2</span></span><span class="mul" id="maquina-pos-mul2"><span class="dot">·</span><span class="par">(</span><span class="num2" id="maquina-pos-n22">5</span><span class="par">)</span></span><span class="res" id="maquina-pos-res2"><span class="eq">=</span><span class="val">25</span></span>
+      </div>
+    </div>
+    <div class="caps"><div class="cap" data-layout-allow-overlap id="maquina-pos-cap0">Coloque um número no espaço do ( )²</div><div class="cap" data-layout-allow-overlap id="maquina-pos-cap1">Elevar ao quadrado é <b>multiplicar o número por ele mesmo</b></div><div class="cap" data-layout-allow-overlap id="maquina-pos-cap2">2 vezes 2 é <b class='g'>4</b></div><div class="cap" data-layout-allow-overlap id="maquina-pos-cap3">Agora o <b>3</b>: ele entra nos dois parênteses</div><div class="cap" data-layout-allow-overlap id="maquina-pos-cap4">3 vezes 3 é <b class='g'>9</b></div><div class="cap" data-layout-allow-overlap id="maquina-pos-cap5">E o <b>5</b>?</div><div class="cap" data-layout-allow-overlap id="maquina-pos-cap6">5 vezes 5 é <b class='g'>25</b></div><div class="cap" data-layout-allow-overlap id="maquina-pos-cap7">Sempre: <b>( número )² = número · número</b></div></div>
+    <div class="chips"><span class="chip" id="maquina-pos-chip0"><span class="par">(</span> 2 <span class="par">)</span>² = <b>4</b></span><span class="chip" id="maquina-pos-chip1"><span class="par">(</span> 3 <span class="par">)</span>² = <b>9</b></span><span class="chip" id="maquina-pos-chip2"><span class="par">(</span> 5 <span class="par">)</span>² = <b>25</b></span></div>
+    
+    <div class="foot l">Aulão ENEM · Matemática</div>
+    <div class="foot r">Prof. Natanael</div>
+  </div>
+
+  <div id="maquina-neg" class="clip scene" data-composition-id="maquina-neg" data-label="A máquina ( )²: números negativos" data-start="14.4" data-duration="14.6" data-width="1920" data-height="1080" data-track-index="0">
+    <div class="margin"></div>
+    <div class="intro kicker">FUNÇÃO DO 2º GRAU · PARTE A</div>
+    <h1 class="intro">E os números negativos?</h1>
+    <div class="tray intro"><span class="trl">Escolha um número:</span><span class="card" id="maquina-neg-card0"><span class="neg">−</span>2</span><span class="card" id="maquina-neg-card1"><span class="neg">−</span>3</span><span class="card" id="maquina-neg-card2"><span class="neg">−</span>5</span></div>
+    <div class="stage">
+      <div class="line" data-layout-allow-overlap id="maquina-neg-L0">
+        <span class="par">(</span><span class="slot" id="maquina-neg-slot0"><span class="num" id="maquina-neg-num0"><span class="neg">−</span>2</span></span><span class="cl">)<span class="sq" id="maquina-neg-sq0">2</span></span><span class="mul" id="maquina-neg-mul0"><span class="dot">·</span><span class="par">(</span><span class="num2" id="maquina-neg-n20"><span class="neg">−</span>2</span><span class="par">)</span></span><span class="res" id="maquina-neg-res0"><span class="eq">=</span><span class="val">4</span></span>
+      </div>
+      <div class="line" data-layout-allow-overlap id="maquina-neg-L1">
+        <span class="par">(</span><span class="slot" id="maquina-neg-slot1"><span class="num" id="maquina-neg-num1"><span class="neg">−</span>3</span></span><span class="cl">)<span class="sq" id="maquina-neg-sq1">2</span></span><span class="mul" id="maquina-neg-mul1"><span class="dot">·</span><span class="par">(</span><span class="num2" id="maquina-neg-n21"><span class="neg">−</span>3</span><span class="par">)</span></span><span class="res" id="maquina-neg-res1"><span class="eq">=</span><span class="val">9</span></span>
+      </div>
+      <div class="line" data-layout-allow-overlap id="maquina-neg-L2">
+        <span class="par">(</span><span class="slot" id="maquina-neg-slot2"><span class="num" id="maquina-neg-num2"><span class="neg">−</span>5</span></span><span class="cl">)<span class="sq" id="maquina-neg-sq2">2</span></span><span class="mul" id="maquina-neg-mul2"><span class="dot">·</span><span class="par">(</span><span class="num2" id="maquina-neg-n22"><span class="neg">−</span>5</span><span class="par">)</span></span><span class="res" id="maquina-neg-res2"><span class="eq">=</span><span class="val">25</span></span>
+      </div>
+    </div>
+    <div class="caps"><div class="cap" data-layout-allow-overlap id="maquina-neg-cap0">E se o número for <b class='c'>negativo</b>? Ele entra <b>com o sinal</b></div><div class="cap" data-layout-allow-overlap id="maquina-neg-cap1">Os <b>dois</b> parênteses levam o sinal</div><div class="cap" data-layout-allow-overlap id="maquina-neg-cap2"><b class='c'>menos</b> vezes <b class='c'>menos</b> dá <b class='g'>mais</b>: resultado 4</div><div class="cap" data-layout-allow-overlap id="maquina-neg-cap3">Mesma coisa com o <b class='c'>−3</b></div><div class="cap" data-layout-allow-overlap id="maquina-neg-cap4">−3 vezes −3 é <b class='g'>9</b></div><div class="cap" data-layout-allow-overlap id="maquina-neg-cap5">E o <b class='c'>−5</b>?</div><div class="cap" data-layout-allow-overlap id="maquina-neg-cap6">−5 vezes −5 é <b class='g'>25</b></div><div class="cap" data-layout-allow-overlap id="maquina-neg-cap7"><b>Espelho:</b> o positivo (azul) e o negativo (verde) deram o <b>mesmo</b> resultado</div></div>
+    <div class="chips"><span class="chip" id="maquina-neg-chip0"><span class="par">(</span> <span class="neg">−</span>2 <span class="par">)</span>² = <b>4</b></span><span class="chip" id="maquina-neg-chip1"><span class="par">(</span> <span class="neg">−</span>3 <span class="par">)</span>² = <b>9</b></span><span class="chip" id="maquina-neg-chip2"><span class="par">(</span> <span class="neg">−</span>5 <span class="par">)</span>² = <b>25</b></span></div>
+    <div class="chips mrow"><span class="chip mir" id="maquina-neg-mir0"><span class="par">(</span> 2 <span class="par">)</span>² = <b>4</b></span><span class="chip mir" id="maquina-neg-mir1"><span class="par">(</span> 3 <span class="par">)</span>² = <b>9</b></span><span class="chip mir" id="maquina-neg-mir2"><span class="par">(</span> 5 <span class="par">)</span>² = <b>25</b></span></div>
+    <div class="foot l">Aulão ENEM · Matemática</div>
+    <div class="foot r">Prof. Natanael</div>
+  </div>
+</div>
+<script>
+window.__timelines = window.__timelines || {};
+const MASTER = gsap.timeline({paused:true}).to({}, {duration:29.0}, 0);
+(function(){
+const tl=gsap.timeline();
+const q=(s)=>"#maquina-pos-"+s;
+gsap.set("#maquina-pos .line",{opacity:0});gsap.set("#maquina-pos .cap",{opacity:0,y:20});gsap.set("#maquina-pos .chip",{opacity:0,y:30});
+gsap.set("#maquina-pos .mul",{opacity:0,x:-40});gsap.set("#maquina-pos .res",{opacity:0,scale:.6,transformOrigin:"0% 60%"});gsap.set("#maquina-pos .num",{opacity:0});gsap.set("#maquina-pos .num2",{opacity:0});
+gsap.set("#maquina-pos-L0",{opacity:1});gsap.set("#maquina-pos-cap0",{opacity:1,y:0});
+tl.to("#maquina-pos-cap0",{opacity:1,y:0,duration:.5,ease:"power2.out"},0.65);
+tl.to("#maquina-pos-card0",{scale:1.18,backgroundColor:"#ffe08a",duration:.35,ease:"back.out(2)"},0.40);
+gsap.set("#maquina-pos-num0",{y:-320,scale:1.5});
+tl.to("#maquina-pos-num0",{opacity:1,y:0,scale:1,duration:.7,ease:"bounce.out"},0.70);
+tl.to("#maquina-pos-slot0",{borderColor:"rgba(217,72,15,0)",duration:.4},1.30);
+tl.to("#maquina-pos-cap0",{opacity:0,y:-15,duration:.3},1.90);
+tl.to("#maquina-pos-cap1",{opacity:1,y:0,duration:.5,ease:"power2.out"},2.15);
+tl.to("#maquina-pos-sq0",{opacity:0,y:-70,duration:.4,ease:"power2.in"},1.90);
+gsap.set("#maquina-pos-n20",{scale:1.4});
+tl.to("#maquina-pos-mul0",{opacity:1,x:0,duration:.6,ease:"power2.out"},2.20);
+tl.to("#maquina-pos-n20",{opacity:1,scale:1,duration:.5,ease:"back.out(2)"},2.40);
+tl.to("#maquina-pos-cap1",{opacity:0,y:-15,duration:.3},3.40);
+tl.to("#maquina-pos-cap2",{opacity:1,y:0,duration:.5,ease:"power2.out"},3.65);
+tl.to("#maquina-pos-res0",{opacity:1,scale:1,duration:.6,ease:"back.out(2.2)"},3.40);
+tl.to("#maquina-pos-chip0",{opacity:1,y:0,duration:.5,ease:"power2.out"},3.90);
+tl.to("#maquina-pos-cap2",{opacity:0,y:-15,duration:.3},4.70);
+tl.to("#maquina-pos-cap3",{opacity:1,y:0,duration:.5,ease:"power2.out"},4.95);
+tl.to("#maquina-pos-L0",{opacity:0,y:-50,duration:.4},4.70);
+tl.to("#maquina-pos-card0",{opacity:.6,scale:1,duration:.3},4.70);
+tl.to("#maquina-pos-L1",{opacity:1,duration:.4},5.05);
+tl.to("#maquina-pos-card1",{scale:1.18,backgroundColor:"#ffe08a",duration:.35,ease:"back.out(2)"},5.15);
+gsap.set("#maquina-pos-num1",{y:-320,scale:1.5});
+tl.to("#maquina-pos-num1",{opacity:1,y:0,scale:1,duration:.7,ease:"bounce.out"},5.45);
+tl.to("#maquina-pos-slot1",{borderColor:"rgba(217,72,15,0)",duration:.4},6.05);
+tl.to("#maquina-pos-sq1",{opacity:0,y:-70,duration:.4,ease:"power2.in"},6.35);
+gsap.set("#maquina-pos-n21",{scale:1.4});
+tl.to("#maquina-pos-mul1",{opacity:1,x:0,duration:.6,ease:"power2.out"},6.65);
+tl.to("#maquina-pos-n21",{opacity:1,scale:1,duration:.5,ease:"back.out(2)"},6.85);
+tl.to("#maquina-pos-cap3",{opacity:0,y:-15,duration:.3},7.20);
+tl.to("#maquina-pos-cap4",{opacity:1,y:0,duration:.5,ease:"power2.out"},7.45);
+tl.to("#maquina-pos-res1",{opacity:1,scale:1,duration:.6,ease:"back.out(2.2)"},7.20);
+tl.to("#maquina-pos-chip1",{opacity:1,y:0,duration:.5,ease:"power2.out"},7.70);
+tl.to("#maquina-pos-cap4",{opacity:0,y:-15,duration:.3},8.50);
+tl.to("#maquina-pos-cap5",{opacity:1,y:0,duration:.5,ease:"power2.out"},8.75);
+tl.to("#maquina-pos-L1",{opacity:0,y:-50,duration:.4},8.50);
+tl.to("#maquina-pos-card1",{opacity:.6,scale:1,duration:.3},8.50);
+tl.to("#maquina-pos-L2",{opacity:1,duration:.4},8.85);
+tl.to("#maquina-pos-card2",{scale:1.18,backgroundColor:"#ffe08a",duration:.35,ease:"back.out(2)"},8.95);
+gsap.set("#maquina-pos-num2",{y:-320,scale:1.5});
+tl.to("#maquina-pos-num2",{opacity:1,y:0,scale:1,duration:.7,ease:"bounce.out"},9.25);
+tl.to("#maquina-pos-slot2",{borderColor:"rgba(217,72,15,0)",duration:.4},9.85);
+tl.to("#maquina-pos-sq2",{opacity:0,y:-70,duration:.4,ease:"power2.in"},10.15);
+gsap.set("#maquina-pos-n22",{scale:1.4});
+tl.to("#maquina-pos-mul2",{opacity:1,x:0,duration:.6,ease:"power2.out"},10.45);
+tl.to("#maquina-pos-n22",{opacity:1,scale:1,duration:.5,ease:"back.out(2)"},10.65);
+tl.to("#maquina-pos-cap5",{opacity:0,y:-15,duration:.3},11.00);
+tl.to("#maquina-pos-cap6",{opacity:1,y:0,duration:.5,ease:"power2.out"},11.25);
+tl.to("#maquina-pos-res2",{opacity:1,scale:1,duration:.6,ease:"back.out(2.2)"},11.00);
+tl.to("#maquina-pos-chip2",{opacity:1,y:0,duration:.5,ease:"power2.out"},11.50);
+tl.to("#maquina-pos-cap6",{opacity:0,y:-15,duration:.3},12.30);
+tl.to("#maquina-pos-cap7",{opacity:1,y:0,duration:.5,ease:"power2.out"},12.55);
+tl.to("#maquina-pos-L2",{opacity:1,duration:.1},12.30);
+tl.to("#maquina-pos .card",{opacity:1,scale:1,backgroundColor:"#ffe08a",duration:.4,stagger:.1},12.30);
+MASTER.add(tl,0);
+})();
+(function(){
+const tl=gsap.timeline();
+const q=(s)=>"#maquina-neg-"+s;
+gsap.set("#maquina-neg .line",{opacity:0});gsap.set("#maquina-neg .cap",{opacity:0,y:20});gsap.set("#maquina-neg .chip",{opacity:0,y:30});
+gsap.set("#maquina-neg .mul",{opacity:0,x:-40});gsap.set("#maquina-neg .res",{opacity:0,scale:.6,transformOrigin:"0% 60%"});gsap.set("#maquina-neg .num",{opacity:0});gsap.set("#maquina-neg .num2",{opacity:0});
+gsap.set("#maquina-neg-L0",{opacity:1});gsap.set("#maquina-neg-cap0",{opacity:1,y:0});
+tl.to("#maquina-neg-cap0",{opacity:1,y:0,duration:.5,ease:"power2.out"},0.65);
+tl.to("#maquina-neg-card0",{scale:1.18,backgroundColor:"#ffe08a",duration:.35,ease:"back.out(2)"},0.40);
+gsap.set("#maquina-neg-num0",{y:-320,scale:1.5});
+tl.to("#maquina-neg-num0",{opacity:1,y:0,scale:1,duration:.7,ease:"bounce.out"},0.70);
+tl.to("#maquina-neg-slot0",{borderColor:"rgba(217,72,15,0)",duration:.4},1.30);
+tl.to("#maquina-neg-cap0",{opacity:0,y:-15,duration:.3},1.90);
+tl.to("#maquina-neg-cap1",{opacity:1,y:0,duration:.5,ease:"power2.out"},2.15);
+tl.to("#maquina-neg-sq0",{opacity:0,y:-70,duration:.4,ease:"power2.in"},1.90);
+gsap.set("#maquina-neg-n20",{scale:1.4});
+tl.to("#maquina-neg-mul0",{opacity:1,x:0,duration:.6,ease:"power2.out"},2.20);
+tl.to("#maquina-neg-n20",{opacity:1,scale:1,duration:.5,ease:"back.out(2)"},2.40);
+tl.to("#maquina-neg-cap1",{opacity:0,y:-15,duration:.3},3.40);
+tl.to("#maquina-neg-cap2",{opacity:1,y:0,duration:.5,ease:"power2.out"},3.65);
+tl.to("#maquina-neg-res0",{opacity:1,scale:1,duration:.6,ease:"back.out(2.2)"},3.40);
+tl.to("#maquina-neg-chip0",{opacity:1,y:0,duration:.5,ease:"power2.out"},3.90);
+tl.to("#maquina-neg-cap2",{opacity:0,y:-15,duration:.3},4.70);
+tl.to("#maquina-neg-cap3",{opacity:1,y:0,duration:.5,ease:"power2.out"},4.95);
+tl.to("#maquina-neg-L0",{opacity:0,y:-50,duration:.4},4.70);
+tl.to("#maquina-neg-card0",{opacity:.6,scale:1,duration:.3},4.70);
+tl.to("#maquina-neg-L1",{opacity:1,duration:.4},5.05);
+tl.to("#maquina-neg-card1",{scale:1.18,backgroundColor:"#ffe08a",duration:.35,ease:"back.out(2)"},5.15);
+gsap.set("#maquina-neg-num1",{y:-320,scale:1.5});
+tl.to("#maquina-neg-num1",{opacity:1,y:0,scale:1,duration:.7,ease:"bounce.out"},5.45);
+tl.to("#maquina-neg-slot1",{borderColor:"rgba(217,72,15,0)",duration:.4},6.05);
+tl.to("#maquina-neg-sq1",{opacity:0,y:-70,duration:.4,ease:"power2.in"},6.35);
+gsap.set("#maquina-neg-n21",{scale:1.4});
+tl.to("#maquina-neg-mul1",{opacity:1,x:0,duration:.6,ease:"power2.out"},6.65);
+tl.to("#maquina-neg-n21",{opacity:1,scale:1,duration:.5,ease:"back.out(2)"},6.85);
+tl.to("#maquina-neg-cap3",{opacity:0,y:-15,duration:.3},7.20);
+tl.to("#maquina-neg-cap4",{opacity:1,y:0,duration:.5,ease:"power2.out"},7.45);
+tl.to("#maquina-neg-res1",{opacity:1,scale:1,duration:.6,ease:"back.out(2.2)"},7.20);
+tl.to("#maquina-neg-chip1",{opacity:1,y:0,duration:.5,ease:"power2.out"},7.70);
+tl.to("#maquina-neg-cap4",{opacity:0,y:-15,duration:.3},8.50);
+tl.to("#maquina-neg-cap5",{opacity:1,y:0,duration:.5,ease:"power2.out"},8.75);
+tl.to("#maquina-neg-L1",{opacity:0,y:-50,duration:.4},8.50);
+tl.to("#maquina-neg-card1",{opacity:.6,scale:1,duration:.3},8.50);
+tl.to("#maquina-neg-L2",{opacity:1,duration:.4},8.85);
+tl.to("#maquina-neg-card2",{scale:1.18,backgroundColor:"#ffe08a",duration:.35,ease:"back.out(2)"},8.95);
+gsap.set("#maquina-neg-num2",{y:-320,scale:1.5});
+tl.to("#maquina-neg-num2",{opacity:1,y:0,scale:1,duration:.7,ease:"bounce.out"},9.25);
+tl.to("#maquina-neg-slot2",{borderColor:"rgba(217,72,15,0)",duration:.4},9.85);
+tl.to("#maquina-neg-sq2",{opacity:0,y:-70,duration:.4,ease:"power2.in"},10.15);
+gsap.set("#maquina-neg-n22",{scale:1.4});
+tl.to("#maquina-neg-mul2",{opacity:1,x:0,duration:.6,ease:"power2.out"},10.45);
+tl.to("#maquina-neg-n22",{opacity:1,scale:1,duration:.5,ease:"back.out(2)"},10.65);
+tl.to("#maquina-neg-cap5",{opacity:0,y:-15,duration:.3},11.00);
+tl.to("#maquina-neg-cap6",{opacity:1,y:0,duration:.5,ease:"power2.out"},11.25);
+tl.to("#maquina-neg-res2",{opacity:1,scale:1,duration:.6,ease:"back.out(2.2)"},11.00);
+tl.to("#maquina-neg-chip2",{opacity:1,y:0,duration:.5,ease:"power2.out"},11.50);
+tl.to("#maquina-neg-cap6",{opacity:0,y:-15,duration:.3},12.30);
+tl.to("#maquina-neg-cap7",{opacity:1,y:0,duration:.5,ease:"power2.out"},12.55);
+tl.to("#maquina-neg-mir0",{opacity:1,y:0,duration:.5,ease:"power2.out"},12.60);
+tl.to("#maquina-neg-mir1",{opacity:1,y:0,duration:.5,ease:"power2.out"},12.85);
+tl.to("#maquina-neg-mir2",{opacity:1,y:0,duration:.5,ease:"power2.out"},13.10);
+MASTER.add(tl,14.4);
+})();
+window.__timelines["root"] = MASTER;
+
+</script>
+</body>
+</html>
