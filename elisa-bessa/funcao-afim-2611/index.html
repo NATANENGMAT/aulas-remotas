@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Função Afim 26/11</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@500;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --paper:#EEF3F9; --card:#FFFFFF; --line:#CFDCEB; --grid-minor:#E8EEF6; --grid-major:#C3D4E8;
+  --ink:#15223D; --muted:#53627C;
+  --red:#E03A2B; --blue:#2360D8; --green:#0F8F58; --orange:#EA9200;
+  --ok-bg:#E4F5EC; --err-bg:#FDE8E6; --tip-bg:#FFF6E0;
+  --f-display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Nunito","Segoe UI",system-ui,sans-serif;
+  --f-num:"JetBrains Mono",Consolas,ui-monospace,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:18px;line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-right)) 48px max(16px,env(safe-area-inset-left))}
+header.top{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.eyebrow{font-weight:800;font-size:.78em;letter-spacing:.1em;text-transform:uppercase;color:var(--red)}
+h1,h2{font-family:var(--f-display);font-weight:800;line-height:1.05;margin:0;text-wrap:balance}
+h1{font-size:clamp(30px,7vw,46px)}
+h2{font-size:clamp(25px,5.6vw,34px)}
+p{margin:0}
+b.r{color:var(--red)} b.g{color:var(--green)} b.o{color:var(--orange)} b.bl{color:var(--blue)}
+.steps{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.steps button{font:inherit;font-weight:800;font-size:.8em;min-width:38px;height:38px;border-radius:19px;border:2px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer;padding:0 10px}
+.steps button.feito{border-color:var(--green);color:var(--green)}
+.steps button.atual{background:var(--ink);border-color:var(--ink);color:#fff}
+.steps button:disabled{opacity:.45;cursor:default}
+.card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+section.mis{display:none}
+section.mis.on{display:flex;animation:in .35s ease-out}
+@keyframes in{from{opacity:.3;transform:translateY(8px)}to{opacity:1;transform:none}}
+.tarefa{display:flex;flex-direction:column;gap:10px;border-top:2px dashed var(--line);padding-top:14px}
+.tarefa h3{margin:0;font-size:1.02em;font-weight:800}
+.tarefa h3 span{display:inline-block;background:var(--ink);color:#fff;border-radius:8px;padding:0 .45em;margin-right:6px;font-size:.85em}
+.graph{position:relative;width:100%;aspect-ratio:1/1;max-height:72vh;background:#fff;border:2px solid var(--line);border-radius:14px;overflow:hidden;touch-action:manipulation}
+.graph.wide{aspect-ratio:5/4}
+.graph canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{font:inherit;font-weight:800;font-size:.95em;border-radius:12px;padding:.6em 1.05em;cursor:pointer;border:2px solid var(--ink);background:var(--ink);color:#fff;min-height:48px}
+.btn.ghost{background:#fff;color:var(--ink)}
+.btn.go{background:var(--green);border-color:var(--green)}
+.btn:disabled{opacity:.35;cursor:default}
+.btn:active{transform:translateY(1px)}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.formula{font-family:var(--f-num);font-weight:700;font-size:1.1em;background:var(--paper);border-radius:10px;padding:.35em .7em;align-self:flex-start}
+.fb{display:none;font-weight:700;border-radius:10px;padding:.6em .8em;border-left:6px solid}
+.fb.ok{display:block;background:var(--ok-bg);border-color:var(--green);color:#0A5C39}
+.fb.erro{display:block;background:var(--err-bg);border-color:var(--red);color:#8A1F15}
+.fb.rev{display:block;background:var(--tip-bg);border-color:var(--orange);color:#6B4500}
+.fb small{font-weight:600;opacity:.8}
+.dica{background:var(--tip-bg);border-left:6px solid var(--orange);border-radius:10px;padding:.6em .8em;font-weight:700}
+table{border-collapse:collapse;font-family:var(--f-num);width:100%;max-width:420px}
+th,td{padding:.3em .4em;text-align:center;border:2px solid var(--line)}
+th{font-family:var(--f-body);font-weight:800;background:var(--paper)}
+td input{width:100%;max-width:5.5em}
+input.num{font:inherit;font-family:var(--f-num);font-weight:700;font-size:1em;text-align:center;border:2px solid var(--grid-major);border-radius:10px;padding:.35em .4em;min-height:44px;background:#fff;color:var(--ink);width:6em}
+input.num.certo{border-color:var(--green);background:var(--ok-bg)}
+input.num.errado{border-color:var(--red);background:var(--err-bg)}
+input.txt{font:inherit;border:2px solid var(--grid-major);border-radius:10px;padding:.5em .7em;min-height:48px;width:100%;background:#fff;color:var(--ink)}
+select.txt{font:inherit;border:2px solid var(--grid-major);border-radius:10px;padding:.5em .7em;min-height:48px;background:#fff;color:var(--ink)}
+.opcoes{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.opcoes button{font:inherit;font-weight:800;font-family:var(--f-num);border:2px solid var(--grid-major);background:#fff;color:var(--ink);border-radius:12px;padding:.6em;min-height:52px;cursor:pointer}
+.opcoes button.sel{border-color:var(--blue);background:#E6EEFC;color:var(--blue)}
+.opcoes.txtopc button{font-family:var(--f-body)}
+.slider{display:grid;grid-template-columns:2em minmax(0,1fr) 3.6em;align-items:center;gap:10px;font-weight:800;font-size:1.1em}
+.slider output{font-family:var(--f-num);text-align:right}
+input[type=range]{width:100%;height:36px}
+.eq{font-family:var(--f-num);font-weight:700;font-size:clamp(24px,6vw,34px)}
+.eq .a{color:var(--red)} .eq .b{color:var(--green)}
+.class-list{display:flex;flex-direction:column;gap:10px}
+.class-item{border:2px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.class-item .f{font-family:var(--f-num);font-weight:700}
+.class-item .row button{flex:1;min-width:120px}
+.class-item.certo{border-color:var(--green);background:var(--ok-bg)}
+.class-item.errado{border-color:var(--red);background:var(--err-bg)}
+.leg{display:flex;gap:14px;flex-wrap:wrap;font-size:.88em;font-weight:700;color:var(--muted)}
+.leg i{display:inline-block;width:22px;height:0;border-top:4px solid;vertical-align:middle;margin-right:4px}
+.next{display:none}
+.next.on{display:flex}
+.resumo table{max-width:none;font-family:var(--f-body)}
+.resumo td{text-align:left}
+.resumo td:last-child{text-align:center;white-space:nowrap}
+.selo{font-family:var(--f-display);font-weight:800;font-size:clamp(34px,9vw,52px);line-height:1;color:var(--green)}
+.muted{color:var(--muted);font-size:.9em}
+.entrega{display:flex;flex-direction:column;gap:10px;border:2px solid var(--orange);background:var(--tip-bg);border-radius:14px;padding:14px;font-weight:700}
+.entrega.feita{border-color:var(--green);background:var(--ok-bg);color:#0A5C39}
+.entrega small{font-weight:600;word-break:break-all}
+a{color:var(--blue);font-weight:800}
+.btn.narr{align-self:flex-start;min-height:42px;padding:.35em .9em;font-size:.88em}
+.btn.ouvir{align-self:flex-start;min-height:42px;padding:.3em .9em;font-size:.88em;border-color:var(--blue);color:var(--blue)}
+@media (prefers-reduced-motion:reduce){section.mis.on{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">Matemática · 9º ano · Atividade de 26/11</div>
+  <h1>Função afim: a função da <span style="color:var(--red)">reta</span></h1>
+  <div class="steps" id="steps"></div>
+</header>
+
+<!-- 0. Identificação -->
+<section class="mis card" data-n="0">
+  <h2>Antes de começar</h2>
+  <p>Faça a atividade com calma. Você tem <b>3 tentativas</b> em cada pergunta. Se errar, aparece uma dica. No final, toque em <b>Entregar</b> para enviar ao professor.</p>
+  <label class="tarefa" style="border:0;padding:0">
+    <h3>Sua turma</h3>
+    <select class="txt" id="turma">
+      <option value="">Escolha a turma</option>
+      <option value="9º 1">9º ano 1</option>
+      <option value="9º 2">9º ano 2</option>
+      <option value="9º 4">9º ano 4</option>
+    </select>
+  </label>
+  <label class="tarefa" style="border:0;padding:0">
+    <h3>Seu nome</h3>
+    <select class="txt" id="aluno" disabled><option value="">Escolha a turma primeiro</option></select>
+  </label>
+  <div class="fb" id="fb-ini"></div>
+  <div class="row"><button class="btn ghost" id="recarregar" hidden>Carregar nomes de novo</button><button class="btn go" id="comecar">Começar a atividade</button></div>
+  <p class="muted" id="prazo-ini">Prazo: até 27/11 às 23h59 (horário de Manaus).</p>
+  <p class="muted"><a href="../../painel/funcoes-9ano.html" target="_blank" rel="noopener">Ver o painel de entregas ↗</a></p>
+</section>
+
+<!-- 1. Mototáxi -->
+<section class="mis card" data-n="1">
+  <div class="eyebrow">Missão 1</div>
+  <h2>O mototáxi do seu Raimundo</h2>
+  <p>Seu Raimundo cobra <b class="g">R$ 3,00</b> só para sair com o passageiro e mais <b class="r">R$ 2,00</b> por quilômetro.</p>
+  <div class="tarefa">
+    <h3><span>a</span>Complete a tabela: quanto custa cada corrida?</h3>
+    <table id="tab1"><thead><tr><th>km (x)</th><th>preço em R$ (y)</th></tr></thead><tbody></tbody></table>
+    <div class="row"><button class="btn" id="c1a">Conferir tabela</button></div>
+    <div class="fb" id="fb-m1a"></div>
+  </div>
+  <div class="tarefa">
+    <h3><span>b</span>Qual fórmula calcula o preço y para x quilômetros?</h3>
+    <div class="opcoes" id="op1b">
+      <button data-v="0">y = 3x + 2</button>
+      <button data-v="1">y = 2x + 3</button>
+      <button data-v="2">y = 5x</button>
+      <button data-v="3">y = 2x</button>
+    </div>
+    <div class="fb" id="fb-m1b"></div>
+  </div>
+  <div class="row next"><button class="btn go" data-prox>Próxima missão →</button></div>
+</section>
+
+<!-- 2. Pontos -->
+<section class="mis card" data-n="2">
+  <div class="eyebrow">Missão 2</div>
+  <h2>Marque os pontos no gráfico</h2>
+  <p>Cada linha da tabela vira um ponto (x, y). Toque no gráfico para marcar os <b>5 pontos</b> do mototáxi: x = 0, 1, 2, 3 e 4.</p>
+  <div class="formula">y = <span style="color:var(--red)">2</span>x + <span style="color:var(--green)">3</span></div>
+  <div class="tarefa">
+    <h3><span>a</span>Toque nos cruzamentos certos do quadriculado</h3>
+    <div class="graph"><canvas id="cv2"></canvas></div>
+    <div class="row"><button class="btn ghost" id="lig2" disabled>Ligar os pontos</button><span class="muted" id="cont2">0 de 5 pontos</span></div>
+    <div class="fb" id="fb-m2a"></div>
+  </div>
+  <div class="tarefa">
+    <h3><span>b</span>Ligando os pontos, que desenho apareceu?</h3>
+    <div class="opcoes txtopc" id="op2b">
+      <button data-v="0">Uma reta</button>
+      <button data-v="1">Uma curva</button>
+      <button data-v="2">Um zigue-zague</button>
+    </div>
+    <div class="fb" id="fb-m2b"></div>
+  </div>
+  <div class="row next"><button class="btn go" data-prox>Próxima missão →</button></div>
+</section>
+
+<!-- 3. Acerte a reta -->
+<section class="mis card" data-n="3">
+  <div class="eyebrow">Missão 3</div>
+  <h2>Acerte a reta</h2>
+  <p>Na função <b>y = <span style="color:var(--red)">a</span>x + <span style="color:var(--green)">b</span></b>, mexa nos controles até a sua reta (azul) ficar <b>em cima</b> da reta tracejada.</p>
+  <div class="dica">Pista: o <b class="r">a</b> é o degrau (quanto a reta sobe a cada passo para a direita). O <b class="g">b</b> é onde a reta corta o eixo y.</div>
+  <div class="eq" id="eq3"></div>
+  <div class="slider"><label for="ra3" style="color:var(--red)">a</label><input type="range" id="ra3" min="1" max="5" step="1" value="1" style="accent-color:var(--red)"><output id="oa3"></output></div>
+  <div class="slider"><label for="rb3" style="color:var(--green)">b</label><input type="range" id="rb3" min="0" max="6" step="1" value="0" style="accent-color:var(--green)"><output id="ob3"></output></div>
+  <div class="graph"><canvas id="cv3"></canvas></div>
+  <div class="leg"><span><i style="border-color:var(--blue)"></i>sua reta</span><span><i style="border-color:var(--orange);border-top-style:dashed"></i>alvo</span></div>
+  <div class="tarefa">
+    <h3 id="h3alvo"><span>a</span>Alvo 1 de 2</h3>
+    <div class="row"><button class="btn" id="c3">Conferir</button></div>
+    <div class="fb" id="fb-m3a"></div>
+    <div class="fb" id="fb-m3b"></div>
+  </div>
+  <div class="row next"><button class="btn go" data-prox>Próxima missão →</button></div>
+</section>
+
+<!-- 4. Sobe ou desce -->
+<section class="mis card" data-n="4">
+  <div class="eyebrow">Missão 4</div>
+  <h2>Qual reta é mais inclinada?</h2>
+  <p>Quanto <b>maior</b> o <b class="r">a</b> (o número que acompanha o x), maior o degrau e mais <b>em pé</b> fica a reta. O <b class="g">b</b> (o número sozinho) <b>não</b> muda a inclinação.</p>
+  <div class="tarefa">
+    <h3><span>a</span>Em cada caixa, toque na reta mais inclinada e depois confira</h3>
+    <div class="class-list" id="cl4"></div>
+    <div class="row"><button class="btn" id="c4">Conferir</button></div>
+    <div class="fb" id="fb-m4a"></div>
+  </div>
+  <div class="tarefa" id="ver4" style="display:none">
+    <h3><span>👀</span>Veja as retas de cada caixa no gráfico</h3>
+    <div class="row" id="par4"></div>
+    <div class="graph"><canvas id="cv4"></canvas></div>
+    <div class="leg" id="leg4"></div>
+  </div>
+  <div class="row next"><button class="btn go" data-prox>Próxima missão →</button></div>
+</section>
+
+<!-- 5. Problema -->
+<section class="mis card" data-n="5">
+  <div class="eyebrow">Missão 5</div>
+  <h2>Volta ao mototáxi</h2>
+  <p>Lembre: o preço é <b>y = 2x + 3</b> (R$ 3,00 de saída + R$ 2,00 por km).</p>
+  <div class="tarefa">
+    <h3><span>a</span>Uma corrida custou R$ 23,00. Quantos quilômetros ela teve?</h3>
+    <div class="row"><input class="num" id="i5a" inputmode="decimal" aria-label="quilômetros"> <b>km</b> <button class="btn" id="c5a">Conferir</button></div>
+    <div class="fb" id="fb-m5a"></div>
+  </div>
+  <div class="tarefa">
+    <h3><span>b</span>Quanto custa uma corrida de 7 km?</h3>
+    <div class="row"><b>R$</b> <input class="num" id="i5b" inputmode="decimal" aria-label="preço em reais"> <button class="btn" id="c5b">Conferir</button></div>
+    <div class="fb" id="fb-m5b"></div>
+  </div>
+  <div class="row next"><button class="btn go" data-prox>Ver meu resultado →</button></div>
+</section>
+
+<!-- 6. Resultado -->
+<section class="mis card resumo" data-n="6">
+  <div class="eyebrow">Resultado</div>
+  <h2 id="r-nome"></h2>
+  <p id="r-info" class="muted"></p>
+  <div class="selo" id="r-selo"></div>
+  <table><thead><tr><th>Pergunta</th><th>Situação</th></tr></thead><tbody id="r-tab"></tbody></table>
+  <p class="muted">✔ = acertou &nbsp;·&nbsp; 💡 = viu a resposta depois de 3 tentativas</p>
+  <div class="entrega" id="entrega">
+    <p id="env-status" role="status">Falta entregar para registrar sua participação.</p>
+    <div class="row"><button class="btn go" id="entregar">Entregar atividade</button></div>
+    <p class="muted"><a href="../../painel/funcoes-9ano.html" target="_blank" rel="noopener">Ver o painel de entregas ↗</a></p>
+  </div>
+  <div class="row"><button class="btn ghost" id="refazer">Refazer a atividade</button><button class="btn ghost" id="trocar">Trocar de aluno</button></div>
+</section>
+
+</div>
+
+<script>
+/* ===== Motor comum: estado, tentativas, navegação ===== */
+const KEY='ativ-9ano-2611-afim';
+const ATIV_ID='elisa-funcao-afim-261126';
+const ITENS={
+  m1a:'Tabela do mototáxi', m1b:'Fórmula do mototáxi',
+  m2a:'Pontos no gráfico', m2b:'Desenho formado',
+  m3a:'Acerte a reta, alvo 1', m3b:'Acerte a reta, alvo 2',
+  m4a:'Qual reta é mais inclinada?',
+  m5a:'Quilômetros com R$ 23,00', m5b:'Preço de 7 km'
+};
+const MISSOES={1:['m1a','m1b'],2:['m2a','m2b'],3:['m3a','m3b'],4:['m4a'],5:['m5a','m5b']};
+const TOTAL_MIS=6;
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let S={nome:'',turma:'',itens:{},max:0,atual:0,fim:null};
+try{const r=localStorage.getItem(KEY); if(r) S=Object.assign(S,JSON.parse(r));}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const item=id=>S.itens[id]||(S.itens[id]={t:0,ok:false,rev:false});
+const feito=id=>{const it=S.itens[id];return !!(it&&(it.ok||it.rev))};
+function fb(id,kind,html){const el=$('#fb-'+id); el.className='fb '+kind; el.innerHTML=html;}
+/* Registra uma tentativa. Retorna true quando a pergunta terminou. */
+function checar(id,ok,{dica,resposta,depois}){
+  if(feito(id)){fb(id,S.itens[id].ok?'ok':'rev',S.itens[id].ok?'✔ Você já acertou esta.':'💡 Você já viu a resposta desta.');return true;}
+  const it=item(id); it.t++;
+  if(ok){it.ok=true;save();fb(id,'ok',it.t===1?'✔ Acertou de primeira!':'✔ Acertou!');depois&&depois(true);atualizarMissao();return true;}
+  if(it.t>=3){it.rev=true;save();fb(id,'rev','💡 Resposta: '+resposta);depois&&depois(false);atualizarMissao();return true;}
+  save();fb(id,'erro','✘ Ainda não. '+dica+` <small>(tentativa ${it.t} de 3)</small>`);return false;
+}
+function missaoCompleta(n){return (MISSOES[n]||[]).every(feito)}
+function atualizarMissao(){
+  const n=S.atual, sec=$(`section[data-n="${n}"]`);
+  const nx=sec&&sec.querySelector('.next');
+  if(nx) nx.classList.toggle('on',missaoCompleta(n));
+  desenharPassos();
+}
+/* ===== Narração (áudios gravados em audio/m0.mp3 … m6.mp3) ===== */
+let NARR=true; try{NARR=localStorage.getItem('narracao')!=='0'}catch(e){}
+const voz=new Audio(); voz.preload='none';
+function falar(n,forcar){
+  voz.pause(); if(!NARR&&!forcar) return;
+  voz.src='audio/m'+n+'.mp3'; voz.currentTime=0; voz.play().catch(()=>{});
+}
+(function(){
+  const t=document.createElement('button'); t.className='btn ghost narr'; t.type='button';
+  const pinta=()=>{t.innerHTML=NARR?'🔊 Narração ligada':'🔇 Narração desligada';t.setAttribute('aria-pressed',NARR)};
+  t.onclick=()=>{NARR=!NARR;try{localStorage.setItem('narracao',NARR?'1':'0')}catch(e){};pinta();NARR?falar(S.atual):voz.pause()};
+  pinta(); $('header.top').appendChild(t);
+  $$('section.mis').forEach(sec=>{const n=+sec.dataset.n,h=sec.querySelector('h2');
+    const b=document.createElement('button');b.className='btn ghost ouvir';b.type='button';b.innerHTML='🔊 Ouvir explicação';
+    b.onclick=()=>falar(n,true); h.insertAdjacentElement('afterend',b);});
+})();
+function ir(n){
+  if(n!==S.atual||!voz.src) falar(n);
+  S.atual=n; if(n>S.max) S.max=n; save();
+  $$('section.mis').forEach(s=>s.classList.toggle('on',+s.dataset.n===n));
+  if(n===TOTAL_MIS) montarResumo();
+  atualizarMissao(); window.scrollTo({top:0,behavior:'smooth'});
+}
+function desenharPassos(){
+  const box=$('#steps'); box.innerHTML='';
+  for(let n=1;n<=TOTAL_MIS;n++){
+    const b=document.createElement('button');
+    b.textContent=n===TOTAL_MIS?'Fim':n;
+    b.setAttribute('aria-label',n===TOTAL_MIS?'Resultado':'Missão '+n);
+    if(n===S.atual) b.classList.add('atual'); else if(n<TOTAL_MIS&&missaoCompleta(n)) b.classList.add('feito');
+    b.disabled=n>S.max||S.atual===0;
+    b.onclick=()=>ir(n); box.appendChild(b);
+  }
+}
+$$('[data-prox]').forEach(b=>b.onclick=()=>ir(S.atual+1));
+function num(v){v=String(v).trim().replace(/\s/g,'').replace(',','.');return v===''||isNaN(+v)?null:+v}
+function opcoes(sel,cb){$$(sel+' button').forEach(b=>b.onclick=()=>{$$(sel+' button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');cb(+b.dataset.v,b)})}
+function tween(ms,f,done){const t0=performance.now();const st=t=>{const p=Math.min(1,(t-t0)/ms);f(1-Math.pow(1-p,3));p<1?requestAnimationFrame(st):done&&done()};requestAnimationFrame(st)}
+
+/* ===== Gráfico em canvas ===== */
+function Graph(cv,o){
+  const g=Object.assign({pad:30,lx:1,ly:1,onDraw:null},o), ctx=cv.getContext('2d'); g.ctx=ctx;
+  g.X=x=>g.pad+(x-g.x0)/(g.x1-g.x0)*(g.w-2*g.pad);
+  g.Y=y=>g.h-g.pad-(y-g.y0)/(g.y1-g.y0)*(g.h-2*g.pad);
+  g.ix=p=>g.x0+(p-g.pad)/(g.w-2*g.pad)*(g.x1-g.x0);
+  g.iy=p=>g.y0+(g.h-g.pad-p)/(g.h-2*g.pad)*(g.y1-g.y0);
+  g.draw=()=>{
+    if(!g.w) return; ctx.clearRect(0,0,g.w,g.h);
+    ctx.lineWidth=1;
+    for(let x=Math.ceil(g.x0);x<=g.x1;x++){ctx.strokeStyle=x%g.lx===0?'#C3D4E8':'#E8EEF6';ctx.beginPath();ctx.moveTo(g.X(x),g.Y(g.y0));ctx.lineTo(g.X(x),g.Y(g.y1));ctx.stroke();}
+    for(let y=Math.ceil(g.y0);y<=g.y1;y++){ctx.strokeStyle=y%g.ly===0?'#C3D4E8':'#E8EEF6';ctx.beginPath();ctx.moveTo(g.X(g.x0),g.Y(y));ctx.lineTo(g.X(g.x1),g.Y(y));ctx.stroke();}
+    ctx.strokeStyle='#15223D';ctx.lineWidth=2.5;
+    ctx.beginPath();ctx.moveTo(g.X(g.x0),g.Y(0));ctx.lineTo(g.X(g.x1),g.Y(0));ctx.moveTo(g.X(0),g.Y(g.y0));ctx.lineTo(g.X(0),g.Y(g.y1));ctx.stroke();
+    ctx.fillStyle='#53627C';ctx.font='700 13px Nunito, sans-serif';ctx.textAlign='center';ctx.textBaseline='top';
+    for(let x=Math.ceil(g.x0);x<=g.x1;x++) if(x!==0&&x%g.lx===0) ctx.fillText(x,g.X(x),g.Y(0)+5);
+    ctx.textAlign='right';ctx.textBaseline='middle';
+    for(let y=Math.ceil(g.y0);y<=g.y1;y++) if(y!==0&&y%g.ly===0) ctx.fillText(y,g.X(0)-6,g.Y(y));
+    ctx.textAlign='right';ctx.textBaseline='top';ctx.fillText('0',g.X(0)-5,g.Y(0)+4);
+    ctx.font='800 15px Nunito, sans-serif';ctx.fillStyle='#15223D';
+    ctx.textAlign='right';ctx.textBaseline='bottom';ctx.fillText('x',g.X(g.x1)-4,g.Y(0)-4);
+    ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText('y',g.X(0)+6,g.Y(g.y1)+2);
+    g.onDraw&&g.onDraw(g,ctx);
+  };
+  g.resize=()=>{const r=cv.getBoundingClientRect(); if(!r.width) return; const d=window.devicePixelRatio||1; cv.width=Math.round(r.width*d); cv.height=Math.round(r.height*d); ctx.setTransform(d,0,0,d,0,0); g.w=r.width; g.h=r.height; g.draw();};
+  new ResizeObserver(g.resize).observe(cv);
+  g.fn=(f,col,lw=4,dash,xa=g.x0,xb=g.x1)=>{ctx.save();ctx.beginPath();ctx.rect(0,0,g.w,g.h);ctx.clip();ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.setLineDash(dash||[]);ctx.beginPath();for(let i=0;i<=240;i++){const x=xa+(xb-xa)*i/240;const px=g.X(x),py=g.Y(f(x));i?ctx.lineTo(px,py):ctx.moveTo(px,py)}ctx.stroke();ctx.restore();};
+  g.dot=(x,y,col,r=8)=>{ctx.beginPath();ctx.arc(g.X(x),g.Y(y),r,0,7);ctx.fillStyle=col;ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle='#fff';ctx.stroke();};
+  g.label=(t,x,y,col,dx=10,dy=-10)=>{ctx.font='800 14px "JetBrains Mono", monospace';ctx.textAlign='left';ctx.textBaseline='bottom';const px=g.X(x)+dx,py=g.Y(y)+dy;ctx.lineWidth=4;ctx.strokeStyle='#fff';ctx.strokeText(t,px,py);ctx.fillStyle=col;ctx.fillText(t,px,py);};
+  g.tap=cb=>cv.addEventListener('pointerdown',e=>{const r=cv.getBoundingClientRect();if(g.w!==r.width) g.resize();cb(g.ix(e.clientX-r.left),g.iy(e.clientY-r.top))});
+  return g;
+}
+
+/* ===== Servidor de entregas (Supabase · função funcoes-9ano) ===== */
+const API='https://jzepdmolnoobgbgdavyf.supabase.co/functions/v1/funcoes-9ano',API_KEY='sb_publishable_wjcJ0tnDxK9ucEu3B3vchQ_CtMn6R8M';
+async function api(rota,corpo){
+  const r=await fetch(API+'/'+rota,{method:corpo?'POST':'GET',headers:{apikey:API_KEY,...(corpo?{'Content-Type':'application/json'}:{}),...(S.token?{'x-session':S.token}:{})},body:corpo?JSON.stringify(corpo):undefined,signal:AbortSignal.timeout(20000)});
+  const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||'Não foi possível conectar. Tente novamente.');return d;
+}
+const quando=d=>new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Manaus',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(d));
+function mostrarPrazo(p){if(p) $('#prazo-ini').textContent='Prazo: até '+quando(p).replace(',',' às')+' (horário de Manaus).'}
+
+/* ===== 0. Identificação: turma + nome da lista oficial ===== */
+let pedidoNomes=0;
+async function carregarNomes(){
+  const id=++pedidoNomes,t=$('#turma').value,sel=$('#aluno');
+  sel.disabled=true;sel.replaceChildren(new Option(t?'Carregando nomes…':'Escolha a turma primeiro',''));$('#recarregar').hidden=true;$('#fb-ini').className='fb';
+  if(!t) return;
+  try{const d=await api('alunos?atividade='+ATIV_ID+'&turma='+encodeURIComponent(t));if(id!==pedidoNomes)return;
+    sel.replaceChildren(new Option('Escolha seu nome',''),...d.alunos.map(a=>new Option(a.nome,a.id)));sel.disabled=false;mostrarPrazo(d.prazo);}
+  catch(e){if(id!==pedidoNomes)return;fb('ini','erro',e.message);$('#recarregar').hidden=false;}
+}
+$('#turma').onchange=carregarNomes;$('#recarregar').onclick=carregarNomes;
+$('#comecar').onclick=async()=>{
+  const turma=$('#turma').value,aluno=$('#aluno').value,b=$('#comecar');
+  if(!turma){fb('ini','erro','Escolha a sua turma.');return}
+  if(!aluno){fb('ini','erro','Escolha o seu nome na lista.');return}
+  b.disabled=true;fb('ini','rev','Conferindo seu acesso…');
+  try{
+    const d=await api('entrar',{atividade:ATIV_ID,turma,aluno_id:aluno});
+    if(S.aluno_id&&S.aluno_id!==d.aluno.id){S.itens={};S.max=0;S.atual=0;S.fim=null;S.entrega=null;S.envio=null;}
+    S.token=d.token;S.aluno_id=d.aluno.id;S.nome=d.aluno.nome;S.turma=d.aluno.turma;S.prazo=d.prazo;
+    if(d.entrega&&!S.entrega) S.entrega=d.entrega;
+    save();mostrarAluno();ir(Math.max(1,S.atual||1));
+  }catch(e){fb('ini','erro',e.message)}finally{b.disabled=false}
+};
+function mostrarAluno(){
+  let el=$('#quem');if(!el){el=document.createElement('p');el.id='quem';el.className='muted';$('header.top').insertBefore(el,$('#steps'));}
+  el.innerHTML=S.token?`Aluno: <b>${S.nome.replace(/</g,'&lt;')}</b> · ${S.turma.replace('º ','º ano ')}`:'';
+}
+/* Entrega: envia todas as respostas; pode reenviar (vale a última). */
+async function entregar(){
+  const b=$('#entregar');if(!S.token){$('#env-status').textContent='Entre com sua turma e nome para entregar.';ir(0);return}
+  if(!S.envio){S.envio=crypto.randomUUID?crypto.randomUUID():'10000000-1000-4000-8000-100000000000'.replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));save();}
+  b.disabled=true;$('#env-status').textContent='Enviando sua atividade…';
+  try{
+    const r=await api('entregar',{envio:S.envio,itens:S.itens});
+    S.entrega={protocolo:r.protocolo,enviada_em:r.enviada_em};S.envioFeito=S.envio;save();pintarEntrega();
+  }catch(e){
+    $('#env-status').innerHTML='✘ '+e.message;b.disabled=false;
+    if(/Sessão|Entre com turma/.test(e.message)){S.token=null;save();$('#env-status').innerHTML+=' <a href="#" id="relogar">Entrar de novo</a>';$('#relogar').onclick=ev=>{ev.preventDefault();ir(0)};}
+  }
+}
+function pintarEntrega(){
+  const ok=S.entrega&&S.envioFeito&&S.envioFeito===S.envio;
+  $('#entrega').classList.toggle('feita',!!ok);
+  $('#entregar').disabled=!!ok;$('#entregar').textContent=ok?'✔ Atividade entregue':'Entregar atividade';
+  $('#env-status').innerHTML=ok?`✔ Entrega registrada em <b>${quando(S.entrega.enviada_em)}</b> (Manaus).<br><small>Protocolo: ${S.entrega.protocolo}</small>`
+    :S.entrega?`Você já entregou antes (${quando(S.entrega.enviada_em)}). Toque em Entregar para enviar esta nova tentativa.`:'Falta entregar para registrar sua participação.';
+}
+
+/* ===== 1. Mototáxi ===== */
+const f1=x=>2*x+3;
+const tb1=$('#tab1 tbody');
+[0,1,2,3,4].forEach(x=>{tb1.insertAdjacentHTML('beforeend',`<tr><td>${x}</td><td><input class="num" inputmode="decimal" data-x="${x}" aria-label="preço para ${x} km"></td></tr>`)});
+$('#c1a').onclick=()=>{
+  if(feito('m1a')) return checar('m1a',true,{});
+  let todos=true, vazio=false;
+  $$('#tab1 input').forEach(i=>{const v=num(i.value),ok=v===f1(+i.dataset.x);if(v===null)vazio=true;i.classList.toggle('certo',ok);i.classList.toggle('errado',!ok&&v!==null);if(!ok)todos=false});
+  if(vazio&&!todos){fb('m1a','erro','Preencha todas as linhas antes de conferir.');return}
+  checar('m1a',todos,{dica:'Comece pelos R$ 3,00 da saída e some R$ 2,00 a cada km. Ex.: para 2 km, y = 2·(2) + 3 = 7. As caixas vermelhas estão erradas.',resposta:'3, 5, 7, 9 e 11 reais. Ex.: y = 2·(4) + 3 = 8 + 3 = 11.',depois:()=>$$('#tab1 input').forEach(i=>{i.value=f1(+i.dataset.x);i.classList.add('certo');i.classList.remove('errado')})});
+};
+opcoes('#op1b',v=>checar('m1b',v===1,{dica:'O número que multiplica o x é o que muda a cada km. O número sozinho é a taxa de saída.',resposta:'y = 2x + 3'}));
+
+/* ===== 2. Pontos ===== */
+let p2=new Set(), erro2=null, lig2=0;
+const g2=Graph($('#cv2'),{x0:-0.6,x1:6.5,y0:-0.8,y1:13.5,lx:1,ly:1,onDraw:(g)=>{
+  if(lig2>0) g.fn(f1,'#E03A2B',4,null,0,6.5*lig2);
+  [...p2].forEach(x=>{g.dot(x,f1(x),'#0F8F58');g.label(`(${x}, ${f1(x)})`,x,f1(x),'#0F8F58',x===0?12:-34,x===0?8:-12)});
+  if(erro2) g.dot(erro2[0],erro2[1],'#E03A2B',8);
+}});
+g2.tap((x,y)=>{
+  if(lig2>0) return;
+  const rx=Math.round(x), ry=Math.round(y);
+  if(Math.abs(x-rx)>0.45||Math.abs(y-ry)>0.6) return;
+  if(rx>=0&&rx<=4&&ry===f1(rx)){p2.add(rx); erro2=null;}
+  else{erro2=[rx,ry]; S.err2=(S.err2||0)+1; save(); fb('m2a','erro',rx>=0&&rx<=4?`✘ O ponto (${rx}, ${ry}) não está na tabela. Para x = ${rx}, y = 2·(${rx}) + 3 = ${f1(rx)}. Procure de novo.`:`✘ O ponto (${rx}, ${ry}) não está na tabela. Use só x = 0, 1, 2, 3 e 4.`); setTimeout(()=>{erro2=null;g2.draw()},900);}
+  $('#cont2').textContent=p2.size+' de 5 pontos'; g2.draw();
+  if(p2.size===5){$('#lig2').disabled=false; if(!feito('m2a')){const it=item('m2a');it.t=1+(S.err2||0);it.ok=true;save();} fb('m2a','ok',(S.err2?'✔ Todos os pontos marcados!':'✔ Todos os pontos marcados sem errar nenhum!')+' Agora toque em “Ligar os pontos”.'); atualizarMissao();}
+});
+$('#lig2').onclick=()=>tween(1300,p=>{lig2=p;g2.draw()});
+opcoes('#op2b',v=>checar('m2b',v===0,{dica:'Ligue os pontos com o botão e olhe de novo: o degrau é sempre o mesmo (+2).',resposta:'Uma reta. Como o degrau é sempre igual, o caminho não entorta.'}));
+
+/* ===== 3. Acerte a reta ===== */
+const ALVOS=[{a:2,b:1,id:'m3a'},{a:3,b:4,id:'m3b'}];
+let alvo3=feito('m3a')?1:0;
+const fmtN=n=>String(n).replace('.',',');
+function eqTxt(a,b){
+  const aS=a===1?'':a;
+  const bS=b===0?'':' + '+b;
+  return `y = <span class="a">${aS}</span>x<span class="b">${bS}</span>`;
+}
+const g3=Graph($('#cv3'),{x0:-0.6,x1:6.5,y0:-0.8,y1:13.5,lx:1,ly:1,onDraw:(g)=>{
+  const al=ALVOS[Math.min(alvo3,1)];
+  g.fn(x=>al.a*x+al.b,'#EA9200',5,[12,9],0,g.x1);
+  const a=+$('#ra3').value,b=+$('#rb3').value;
+  g.fn(x=>a*x+b,'#2360D8',4,null,0,g.x1);
+  g.dot(0,b,'#0F8F58',7);
+}});
+function upd3(){const a=+$('#ra3').value,b=+$('#rb3').value;$('#oa3').textContent=fmtN(a);$('#ob3').textContent=b;$('#eq3').innerHTML=eqTxt(a,b);g3.draw()}
+$('#ra3').oninput=upd3;$('#rb3').oninput=upd3;
+function tituloAlvo(){$('#h3alvo').innerHTML=alvo3<2?`<span>${alvo3?'b':'a'}</span>Alvo ${alvo3+1} de 2`:'<span>✔</span>Os dois alvos concluídos';$('#c3').disabled=alvo3>=2}
+$('#c3').onclick=()=>{
+  if(alvo3>=2) return;
+  const al=ALVOS[alvo3],a=+$('#ra3').value,b=+$('#rb3').value;
+  let dica;
+  if(a===al.a) dica='A inclinação (a) está certa! Falta o b: em que número a reta tracejada corta o eixo y?';
+  else if(b===al.b) dica='O b está certo! Falta o a: a cada 1 passo para a direita, quanto a reta tracejada sobe?';
+  else dica='Comece pelo b: em que número a reta tracejada corta o eixo y?';
+  checar(al.id,a===al.a&&b===al.b,{dica,resposta:'y = '+eqTxt(al.a,al.b).replace(/<[^>]+>/g,'').replace('y = ',''),depois:()=>{
+    $('#ra3').value=al.a;$('#rb3').value=al.b;upd3();
+    setTimeout(()=>{alvo3++;tituloAlvo();if(alvo3<2){$('#ra3').value=1;$('#rb3').value=0;upd3();}},1400);
+  }});
+};
+upd3(); tituloAlvo();
+
+/* ===== 4. Mais inclinada ===== */
+const CL4=[
+  {t:'Caixa 1',o:['y = 4x + 1','y = 2x + 5'],f:[[4,1],[2,5]],c:0},
+  {t:'Caixa 2',o:['y = x + 6','y = 3x'],f:[[1,6],[3,0]],c:1},
+  {t:'Mototáxi do seu Raimundo: R$ 2,00 por km e R$ 3,00 de saída. Mototáxi da dona Rosa: R$ 3,00 por km e R$ 1,00 de saída.',o:['Raimundo: y = 2x + 3','Rosa: y = 3x + 1'],f:[[2,3],[3,1]],c:1}
+];
+const esc4=CL4.map(()=>null);
+let par4=0;
+const g4=Graph($('#cv4'),{x0:-0.6,x1:6.5,y0:-0.8,y1:13.5,lx:1,ly:1,onDraw:(g)=>{
+  const p=CL4[par4],cores=['#E03A2B','#2360D8'];
+  p.f.forEach(([a,b],k)=>{g.fn(x=>a*x+b,cores[k],k===p.c?5:3,null,0,g.x1);});
+}});
+function legenda4(){const p=CL4[par4],cores=['#E03A2B','#2360D8'];
+  $('#leg4').innerHTML=p.o.map((t,k)=>`<span><i style="border-color:${cores[k]}"></i>${t}${k===p.c?' (mais inclinada)':''}</span>`).join('');}
+function mostrarPares(){
+  $('#ver4').style.display='flex';
+  $('#par4').innerHTML=CL4.map((p,i)=>`<button class="btn ghost" data-p="${i}">Caixa ${i+1}</button>`).join('');
+  $$('#par4 button').forEach(b=>b.onclick=()=>{par4=+b.dataset.p;$$('#par4 button').forEach(x=>x.classList.toggle('go',x===b));legenda4();g4.draw()});
+  $('#par4 button').click();
+}
+CL4.forEach((c,i)=>{
+  const d=document.createElement('div');d.className='class-item';
+  d.innerHTML=`<div class="f" style="font-family:var(--f-body)">${c.t}</div><div class="row opcoes" style="display:flex"><button data-v="0">${c.o[0]}</button><button data-v="1">${c.o[1]}</button></div>`;
+  d.querySelectorAll('button').forEach(b=>b.onclick=()=>{d.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');esc4[i]=+b.dataset.v;d.classList.remove('certo','errado')});
+  $('#cl4').appendChild(d);
+});
+$('#c4').onclick=()=>{
+  if(!feito('m4a')&&esc4.some(v=>v===null)){fb('m4a','erro','Escolha uma opção em todas as caixas.');return}
+  const items=$$('#cl4 .class-item');let todos=true;
+  CL4.forEach((c,i)=>{const ok=esc4[i]===c.c;items[i].classList.toggle('certo',ok);items[i].classList.toggle('errado',!ok);if(!ok)todos=false});
+  checar('m4a',todos,{dica:'Compare só o número que acompanha o x: quem tem o maior é a mais inclinada. O número sozinho não conta. As caixas vermelhas estão erradas.',resposta:'y = 4x + 1, y = 3x e Rosa (y = 3x + 1). Veja no gráfico abaixo.',depois:()=>{items.forEach((d,i)=>{d.classList.add('certo');d.classList.remove('errado');d.querySelectorAll('button').forEach(b=>b.classList.toggle('sel',+b.dataset.v===CL4[i].c))});mostrarPares()}});
+};
+
+/* ===== 5. Problema ===== */
+$('#c5a').onclick=()=>{const v=num($('#i5a').value);if(v===null){fb('m5a','erro','Digite um número.');return}
+  checar('m5a',v===10,{dica:'Tire os R$ 3,00 da saída: (23 − 3) = 20. Depois veja quantas vezes cabem R$ 2,00 em 20.',resposta:'10 km, porque y = 2·(10) + 3 = 20 + 3 = 23.'})};
+$('#c5b').onclick=()=>{const v=num($('#i5b').value);if(v===null){fb('m5b','erro','Digite um número.');return}
+  checar('m5b',v===17,{dica:'Troque o x por 7: y = 2·(7) + 3.',resposta:'R$ 17,00, porque y = 2·(7) + 3 = 14 + 3 = 17.'})};
+
+/* ===== Resultado ===== */
+function montarResumo(){
+  if(!S.fim){S.fim=new Date().toISOString();save();}
+  const ids=Object.keys(ITENS);let ac=0,prim=0;
+  $('#r-tab').innerHTML=ids.map(id=>{const it=S.itens[id]||{};if(it.ok)ac++;if(it.ok&&it.t===1)prim++;
+    const s=it.ok?(it.t===1?'✔ de primeira':`✔ na ${it.t}ª tentativa`):it.rev?'💡 viu a resposta':'— não respondeu';
+    return `<tr><td>${ITENS[id]}</td><td>${s}</td></tr>`}).join('');
+  $('#r-nome').textContent=S.nome||'Sem nome';
+  const d=new Date(S.fim);
+  $('#r-info').textContent=`${S.turma} · Função afim (26/11) · concluída em ${d.toLocaleDateString('pt-BR')} às ${d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;
+  $('#r-selo').textContent=`${ac} de ${ids.length} acertos`;
+  pintarEntrega();
+}
+$('#entregar').onclick=entregar;
+function zerar(manterAluno){
+  const keep=manterAluno?{nome:S.nome,turma:S.turma,aluno_id:S.aluno_id,token:S.token,entrega:S.entrega}:{};
+  S=Object.assign({nome:'',turma:'',itens:{},max:0,atual:0,fim:null},keep);save();location.reload();
+}
+$('#refazer').onclick=()=>{if(confirm('Refazer a atividade do começo? Sua entrega anterior continua registrada. Para valer a nova tentativa, entregue de novo no final.'))zerar(true)};
+$('#trocar').onclick=()=>{if(confirm('Trocar de aluno? As respostas salvas neste aparelho serão apagadas. As entregas já feitas continuam registradas.'))zerar(false)};
+
+/* ===== Restaurar progresso ===== */
+Object.keys(ITENS).forEach(id=>{const it=S.itens[id];if(it&&(it.ok||it.rev)) fb(id,it.ok?'ok':'rev',it.ok?'✔ Você já acertou esta.':'💡 Você já viu a resposta desta.')});
+if(feito('m1a')) $$('#tab1 input').forEach(i=>{i.value=f1(+i.dataset.x);i.classList.add('certo')});
+if(feito('m2a')){[0,1,2,3,4].forEach(x=>p2.add(x));lig2=1;$('#cont2').textContent='5 de 5 pontos';}
+if(feito('m3a')&&feito('m3b')) alvo3=2; tituloAlvo();
+if(feito('m4a')){$$('#cl4 .class-item').forEach((d,i)=>{d.classList.add('certo');d.querySelectorAll('button').forEach(b=>b.classList.toggle('sel',+b.dataset.v===CL4[i].c))});mostrarPares();}
+mostrarAluno();
+if(S.turma){$('#turma').value=S.turma;carregarNomes().then(()=>{if(S.aluno_id)$('#aluno').value=S.aluno_id});}
+ir(S.token?(S.atual||1):0);
+</script>
+</body>
+</html>

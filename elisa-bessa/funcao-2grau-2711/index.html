@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Função 2º Grau 27/11</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@500;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --paper:#EEF3F9; --card:#FFFFFF; --line:#CFDCEB; --grid-minor:#E8EEF6; --grid-major:#C3D4E8;
+  --ink:#15223D; --muted:#53627C;
+  --red:#E03A2B; --blue:#2360D8; --green:#0F8F58; --orange:#EA9200;
+  --ok-bg:#E4F5EC; --err-bg:#FDE8E6; --tip-bg:#FFF6E0;
+  --f-display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Nunito","Segoe UI",system-ui,sans-serif;
+  --f-num:"JetBrains Mono",Consolas,ui-monospace,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:18px;line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-right)) 48px max(16px,env(safe-area-inset-left))}
+header.top{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.eyebrow{font-weight:800;font-size:.78em;letter-spacing:.1em;text-transform:uppercase;color:var(--red)}
+h1,h2{font-family:var(--f-display);font-weight:800;line-height:1.05;margin:0;text-wrap:balance}
+h1{font-size:clamp(30px,7vw,46px)}
+h2{font-size:clamp(25px,5.6vw,34px)}
+p{margin:0}
+b.r{color:var(--red)} b.g{color:var(--green)} b.o{color:var(--orange)} b.bl{color:var(--blue)}
+.steps{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.steps button{font:inherit;font-weight:800;font-size:.8em;min-width:38px;height:38px;border-radius:19px;border:2px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer;padding:0 10px}
+.steps button.feito{border-color:var(--green);color:var(--green)}
+.steps button.atual{background:var(--ink);border-color:var(--ink);color:#fff}
+.steps button:disabled{opacity:.45;cursor:default}
+.card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+section.mis{display:none}
+section.mis.on{display:flex;animation:in .35s ease-out}
+@keyframes in{from{opacity:.3;transform:translateY(8px)}to{opacity:1;transform:none}}
+.tarefa{display:flex;flex-direction:column;gap:10px;border-top:2px dashed var(--line);padding-top:14px}
+.tarefa h3{margin:0;font-size:1.02em;font-weight:800}
+.tarefa h3 span{display:inline-block;background:var(--ink);color:#fff;border-radius:8px;padding:0 .45em;margin-right:6px;font-size:.85em}
+.graph{position:relative;width:100%;aspect-ratio:1/1;max-height:72vh;background:#fff;border:2px solid var(--line);border-radius:14px;overflow:hidden;touch-action:manipulation}
+.graph.wide{aspect-ratio:5/4}
+.graph canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{font:inherit;font-weight:800;font-size:.95em;border-radius:12px;padding:.6em 1.05em;cursor:pointer;border:2px solid var(--ink);background:var(--ink);color:#fff;min-height:48px}
+.btn.ghost{background:#fff;color:var(--ink)}
+.btn.go{background:var(--green);border-color:var(--green)}
+.btn:disabled{opacity:.35;cursor:default}
+.btn:active{transform:translateY(1px)}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.formula{font-family:var(--f-num);font-weight:700;font-size:1.1em;background:var(--paper);border-radius:10px;padding:.35em .7em;align-self:flex-start}
+.fb{display:none;font-weight:700;border-radius:10px;padding:.6em .8em;border-left:6px solid}
+.fb.ok{display:block;background:var(--ok-bg);border-color:var(--green);color:#0A5C39}
+.fb.erro{display:block;background:var(--err-bg);border-color:var(--red);color:#8A1F15}
+.fb.rev{display:block;background:var(--tip-bg);border-color:var(--orange);color:#6B4500}
+.fb small{font-weight:600;opacity:.8}
+.dica{background:var(--tip-bg);border-left:6px solid var(--orange);border-radius:10px;padding:.6em .8em;font-weight:700}
+table{border-collapse:collapse;font-family:var(--f-num);width:100%;max-width:420px}
+th,td{padding:.3em .4em;text-align:center;border:2px solid var(--line)}
+th{font-family:var(--f-body);font-weight:800;background:var(--paper)}
+td input{width:100%;max-width:5.5em}
+input.num{font:inherit;font-family:var(--f-num);font-weight:700;font-size:1em;text-align:center;border:2px solid var(--grid-major);border-radius:10px;padding:.35em .4em;min-height:44px;background:#fff;color:var(--ink);width:6em}
+input.num.certo{border-color:var(--green);background:var(--ok-bg)}
+input.num.errado{border-color:var(--red);background:var(--err-bg)}
+input.txt{font:inherit;border:2px solid var(--grid-major);border-radius:10px;padding:.5em .7em;min-height:48px;width:100%;background:#fff;color:var(--ink)}
+select.txt{font:inherit;border:2px solid var(--grid-major);border-radius:10px;padding:.5em .7em;min-height:48px;background:#fff;color:var(--ink)}
+.opcoes{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.opcoes button{font:inherit;font-weight:800;font-family:var(--f-num);border:2px solid var(--grid-major);background:#fff;color:var(--ink);border-radius:12px;padding:.6em;min-height:52px;cursor:pointer}
+.opcoes button.sel{border-color:var(--blue);background:#E6EEFC;color:var(--blue)}
+.opcoes.txtopc button{font-family:var(--f-body)}
+.slider{display:grid;grid-template-columns:2em minmax(0,1fr) 3.6em;align-items:center;gap:10px;font-weight:800;font-size:1.1em}
+.slider output{font-family:var(--f-num);text-align:right}
+input[type=range]{width:100%;height:36px}
+.eq{font-family:var(--f-num);font-weight:700;font-size:clamp(24px,6vw,34px)}
+.eq .a{color:var(--red)} .eq .b{color:var(--green)}
+.class-list{display:flex;flex-direction:column;gap:10px}
+.class-item{border:2px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.class-item .f{font-family:var(--f-num);font-weight:700}
+.class-item .row button{flex:1;min-width:120px}
+.class-item.certo{border-color:var(--green);background:var(--ok-bg)}
+.class-item.errado{border-color:var(--red);background:var(--err-bg)}
+.leg{display:flex;gap:14px;flex-wrap:wrap;font-size:.88em;font-weight:700;color:var(--muted)}
+.leg i{display:inline-block;width:22px;height:0;border-top:4px solid;vertical-align:middle;margin-right:4px}
+.next{display:none}
+.next.on{display:flex}
+.resumo table{max-width:none;font-family:var(--f-body)}
+.resumo td{text-align:left}
+.resumo td:last-child{text-align:center;white-space:nowrap}
+.selo{font-family:var(--f-display);font-weight:800;font-size:clamp(34px,9vw,52px);line-height:1;color:var(--green)}
+.muted{color:var(--muted);font-size:.9em}
+.entrega{display:flex;flex-direction:column;gap:10px;border:2px solid var(--orange);background:var(--tip-bg);border-radius:14px;padding:14px;font-weight:700}
+.entrega.feita{border-color:var(--green);background:var(--ok-bg);color:#0A5C39}
+.entrega small{font-weight:600;word-break:break-all}
+a{color:var(--blue);font-weight:800}
+.btn.narr{align-self:flex-start;min-height:42px;padding:.35em .9em;font-size:.88em}
+.btn.ouvir{align-self:flex-start;min-height:42px;padding:.3em .9em;font-size:.88em;border-color:var(--blue);color:var(--blue)}
+@media (prefers-reduced-motion:reduce){section.mis.on{animation:none}}
+</style>
+</head>
+<body>
+<style>
+.degraus{font-family:var(--f-num);font-weight:700;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.degraus span{background:var(--paper);border-radius:8px;padding:.15em .5em}
+.degraus span.d{background:#E6EEFC;color:var(--blue)}
+.leitura{font-family:var(--f-num);font-weight:800;font-size:1.05em;background:var(--paper);border-radius:10px;padding:.5em .7em;line-height:1.6}
+.leitura .t{color:var(--orange)}
+.treino{display:flex;flex-direction:column;gap:10px}
+.treino label{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:var(--f-num);font-weight:700;font-size:1.1em}
+</style>
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">Matemática · 9º ano · Atividade de 27/11</div>
+  <h1>Função do 2º grau: o <span style="color:var(--blue)">x²</span> e a parábola</h1>
+  <div class="steps" id="steps"></div>
+</header>
+
+<!-- 0. Identificação -->
+<section class="mis card" data-n="0">
+  <h2>Antes de começar</h2>
+  <p>Ontem vimos que, na função afim, o degrau é sempre igual e o gráfico é uma reta. Hoje vamos ver o que acontece quando aparece o <b>x²</b>. Você tem <b>3 tentativas</b> em cada pergunta.</p>
+  <label class="tarefa" style="border:0;padding:0">
+    <h3>Sua turma</h3>
+    <select class="txt" id="turma">
+      <option value="">Escolha a turma</option>
+      <option value="9º 1">9º ano 1</option>
+      <option value="9º 2">9º ano 2</option>
+      <option value="9º 4">9º ano 4</option>
+    </select>
+  </label>
+  <label class="tarefa" style="border:0;padding:0">
+    <h3>Seu nome</h3>
+    <select class="txt" id="aluno" disabled><option value="">Escolha a turma primeiro</option></select>
+  </label>
+  <div class="fb" id="fb-ini"></div>
+  <div class="row"><button class="btn ghost" id="recarregar" hidden>Carregar nomes de novo</button><button class="btn go" id="comecar">Começar a atividade</button></div>
+  <p class="muted" id="prazo-ini">Prazo: até 27/11 às 23h59 (horário de Manaus).</p>
+  <p class="muted"><a href="../../painel/funcoes-9ano.html" target="_blank" rel="noopener">Ver o painel de entregas ↗</a></p>
+</section>
+
+<!-- 1. Quadrados -->
+<section class="mis card" data-n="1">
+  <div class="eyebrow">Missão 1</div>
+  <h2>O piso de azulejos</h2>
+  <p>Um piso quadrado tem <b class="bl">x</b> azulejos de cada lado. O total é <b>lado × lado</b>, ou seja, x · x, que escrevemos <b class="bl">x²</b> (x ao quadrado). Mexa no controle e conte.</p>
+  <div class="slider"><label for="r1">x</label><input type="range" id="r1" min="1" max="6" step="1" value="3"><output id="o1">3</output></div>
+  <div class="graph wide"><canvas id="cv1"></canvas></div>
+  <div class="tarefa">
+    <h3><span>a</span>Complete a tabela: quantos azulejos no total?</h3>
+    <table id="tab1"><thead><tr><th>lado (x)</th><th>conta</th><th>azulejos (y)</th></tr></thead><tbody></tbody></table>
+    <div class="row"><button class="btn" id="c1a">Conferir tabela</button></div>
+    <div class="fb" id="fb-m1a"></div>
+  </div>
+  <div class="tarefa">
+    <h3><span>b</span>Veja os degraus. Qual é o próximo, de 25 para 36?</h3>
+    <div class="degraus"><span>1</span><span class="d">+3</span><span>4</span><span class="d">+5</span><span>9</span><span class="d">+7</span><span>16</span><span class="d">+9</span><span>25</span><span class="d">+ ?</span><span>36</span></div>
+    <div class="row"><b>+</b> <input class="num" id="i1b" inputmode="numeric" aria-label="próximo degrau"> <button class="btn" id="c1b">Conferir</button></div>
+    <div class="fb" id="fb-m1b"></div>
+  </div>
+  <div class="tarefa">
+    <h3><span>c</span>Qual fórmula dá o número de azulejos y para um lado x?</h3>
+    <div class="opcoes" id="op1c">
+      <button data-v="0">y = 2x</button>
+      <button data-v="1">y = x²</button>
+      <button data-v="2">y = x + 2</button>
+      <button data-v="3">y = 4x</button>
+    </div>
+    <div class="fb" id="fb-m1c"></div>
+  </div>
+  <div class="row next"><button class="btn go" data-prox>Próxima missão →</button></div>
+</section>
+
+<!-- 2. y = x² + 1 -->
+<section class="mis card" data-n="2">
+  <div class="eyebrow">Missão 2</div>
+  <h2>Calcule e desenhe: y = x² + 1</h2>
+  <p>Primeiro faça o <b>x²</b>, depois <b>some 1</b>. Atenção: <b>menos vezes menos dá mais</b>, então (−3)² = (−3)·(−3) = 9.</p>
+  <div class="tarefa">
+    <h3><span>a</span>Complete a tabela</h3>
+    <table id="tab2"><thead><tr><th>x</th><th>conta</th><th>y</th></tr></thead><tbody></tbody></table>
+    <div class="row"><button class="btn" id="c2a">Conferir tabela</button></div>
+    <div class="fb" id="fb-m2a"></div>
+  </div>
+  <div class="graph"><canvas id="cv2"></canvas></div>
+  <div class="row"><button class="btn ghost" id="mar2" disabled>Marcar os pontos</button><button class="btn ghost" id="lig2" disabled>Ligar os pontos</button></div>
+  <div class="tarefa">
+    <h3><span>b</span>Ligando os pontos, que desenho apareceu?</h3>
+    <div class="opcoes txtopc" id="op2b">
+      <button data-v="0">Uma reta</button>
+      <button data-v="1">Uma parábola</button>
+      <button data-v="2">Um zigue-zague</button>
+    </div>
+    <div class="fb" id="fb-m2b"></div>
+  </div>
+  <div class="row next"><button class="btn go" data-prox>Próxima missão →</button></div>
+</section>
+
+<!-- 3. y = 2x² -->
+<section class="mis card" data-n="3">
+  <div class="eyebrow">Missão 3</div>
+  <h2>Um número na frente: y = 2x²</h2>
+  <p>Quando tem um número na frente do x², a ordem é: <b>primeiro o x²</b>, <b>depois multiplica</b> pelo número.</p>
+  <div class="dica">Exemplo: para x = −3, y = 2·(−3)² = 2·(9) = 18.</div>
+  <div class="tarefa">
+    <h3><span>a</span>Complete a tabela de y = 2x²</h3>
+    <table id="tab3"><thead><tr><th>x</th><th>conta</th><th>y</th></tr></thead><tbody></tbody></table>
+    <div class="row"><button class="btn" id="c3a">Conferir tabela</button></div>
+    <div class="fb" id="fb-m3a"></div>
+  </div>
+  <div class="tarefa" id="ver3" style="display:none">
+    <h3><span>👀</span>Compare no gráfico</h3>
+    <div class="leg"><span><i style="border-color:#9DB4D6"></i>y = x²</span><span><i style="border-color:var(--red)"></i>y = 2x²</span></div>
+    <div class="graph"><canvas id="cv3"></canvas></div>
+    <p class="muted">Com o 2 na frente, cada valor de y dobra e a parábola fica mais fechada.</p>
+  </div>
+  <div class="tarefa">
+    <h3><span>b</span>Quanto vale y = 3x² quando x = 3?</h3>
+    <div class="row"><b>y =</b> <input class="num" id="i3b" inputmode="numeric" aria-label="valor de y"> <button class="btn" id="c3b">Conferir</button></div>
+    <div class="fb" id="fb-m3b"></div>
+  </div>
+  <div class="row next"><button class="btn go" data-prox>Próxima missão →</button></div>
+</section>
+
+<!-- 4. Treino -->
+<section class="mis card" data-n="4">
+  <div class="eyebrow">Missão 4</div>
+  <h2>Treino de cálculo</h2>
+  <p>Lembre a ordem: <b>1º</b> o quadrado, <b>2º</b> a multiplicação, <b>3º</b> a soma.</p>
+  <div class="tarefa">
+    <h3><span>a</span>Calcule cada valor</h3>
+    <div class="treino" id="tr4"></div>
+    <div class="row"><button class="btn" id="c4a">Conferir</button></div>
+    <div class="fb" id="fb-m4a"></div>
+  </div>
+  <div class="row next"><button class="btn go" data-prox>Próxima missão →</button></div>
+</section>
+
+<!-- 5. Bola -->
+<section class="mis card" data-n="5">
+  <div class="eyebrow">Missão 5</div>
+  <h2>O chute da bola</h2>
+  <p>Num chute para o alto, a altura da bola (em metros) depois de <b>t</b> segundos é:</p>
+  <div class="formula" style="font-size:1.25em">h = −t² + 6t</div>
+  <p>Isso quer dizer: <b>h = −(t · t) + 6 · t</b>. Primeiro faça t², depois coloque o sinal de menos, depois some 6 vezes t.</p>
+  <div class="slider"><label for="r5">t</label><input type="range" id="r5" min="0" max="6" step="1" value="0"><output id="o5">0</output></div>
+  <div class="leitura" id="l5"></div>
+  <div class="graph wide"><canvas id="cv5"></canvas></div>
+  <div class="tarefa">
+    <h3><span>a</span>Qual é a altura máxima que a bola atinge?</h3>
+    <div class="row"><input class="num" id="i5a" inputmode="numeric" aria-label="altura máxima"> <b>metros</b> <button class="btn" id="c5a">Conferir</button></div>
+    <div class="fb" id="fb-m5a"></div>
+  </div>
+  <div class="tarefa">
+    <h3><span>b</span>Depois de quantos segundos a bola volta ao chão?</h3>
+    <div class="row"><input class="num" id="i5b" inputmode="numeric" aria-label="segundos"> <b>segundos</b> <button class="btn" id="c5b">Conferir</button></div>
+    <div class="fb" id="fb-m5b"></div>
+  </div>
+  <div class="row next"><button class="btn go" data-prox>Ver meu resultado →</button></div>
+</section>
+
+<!-- 6. Resultado -->
+<section class="mis card resumo" data-n="6">
+  <div class="eyebrow">Resultado</div>
+  <h2 id="r-nome"></h2>
+  <p id="r-info" class="muted"></p>
+  <div class="selo" id="r-selo"></div>
+  <table><thead><tr><th>Pergunta</th><th>Situação</th></tr></thead><tbody id="r-tab"></tbody></table>
+  <p class="muted">✔ = acertou &nbsp;·&nbsp; 💡 = viu a resposta depois de 3 tentativas</p>
+  <div class="entrega" id="entrega">
+    <p id="env-status" role="status">Falta entregar para registrar sua participação.</p>
+    <div class="row"><button class="btn go" id="entregar">Entregar atividade</button></div>
+    <p class="muted"><a href="../../painel/funcoes-9ano.html" target="_blank" rel="noopener">Ver o painel de entregas ↗</a></p>
+  </div>
+  <div class="row"><button class="btn ghost" id="refazer">Refazer a atividade</button><button class="btn ghost" id="trocar">Trocar de aluno</button></div>
+</section>
+
+</div>
+
+<script>
+const KEY='ativ-9ano-2711-2grau';
+const ATIV_ID='elisa-funcao-2grau-271126';
+const ITENS={
+  m1a:'Tabela dos azulejos', m1b:'Próximo degrau', m1c:'Fórmula dos azulejos',
+  m2a:'Tabela de y = x² + 1', m2b:'Desenho formado',
+  m3a:'Tabela de y = 2x²', m3b:'y = 3x² para x = 3',
+  m4a:'Treino de cálculo',
+  m5a:'Altura máxima da bola', m5b:'Tempo até voltar ao chão'
+};
+const MISSOES={1:['m1a','m1b','m1c'],2:['m2a','m2b'],3:['m3a','m3b'],4:['m4a'],5:['m5a','m5b']};
+const TITULO_ATIV='Função do 2º grau (27/11)';
+const TOTAL_MIS=6;
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let S={nome:'',turma:'',itens:{},max:0,atual:0,fim:null};
+try{const r=localStorage.getItem(KEY); if(r) S=Object.assign(S,JSON.parse(r));}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const item=id=>S.itens[id]||(S.itens[id]={t:0,ok:false,rev:false});
+const feito=id=>{const it=S.itens[id];return !!(it&&(it.ok||it.rev))};
+function fb(id,kind,html){const el=$('#fb-'+id); el.className='fb '+kind; el.innerHTML=html;}
+/* Registra uma tentativa. Retorna true quando a pergunta terminou. */
+function checar(id,ok,{dica,resposta,depois}){
+  if(feito(id)){fb(id,S.itens[id].ok?'ok':'rev',S.itens[id].ok?'✔ Você já acertou esta.':'💡 Você já viu a resposta desta.');return true;}
+  const it=item(id); it.t++;
+  if(ok){it.ok=true;save();fb(id,'ok',it.t===1?'✔ Acertou de primeira!':'✔ Acertou!');depois&&depois(true);atualizarMissao();return true;}
+  if(it.t>=3){it.rev=true;save();fb(id,'rev','💡 Resposta: '+resposta);depois&&depois(false);atualizarMissao();return true;}
+  save();fb(id,'erro','✘ Ainda não. '+dica+` <small>(tentativa ${it.t} de 3)</small>`);return false;
+}
+function missaoCompleta(n){return (MISSOES[n]||[]).every(feito)}
+function atualizarMissao(){
+  const n=S.atual, sec=$(`section[data-n="${n}"]`);
+  const nx=sec&&sec.querySelector('.next');
+  if(nx) nx.classList.toggle('on',missaoCompleta(n));
+  desenharPassos();
+}
+/* ===== Narração (áudios gravados em audio/m0.mp3 … m6.mp3) ===== */
+let NARR=true; try{NARR=localStorage.getItem('narracao')!=='0'}catch(e){}
+const voz=new Audio(); voz.preload='none';
+function falar(n,forcar){
+  voz.pause(); if(!NARR&&!forcar) return;
+  voz.src='audio/m'+n+'.mp3'; voz.currentTime=0; voz.play().catch(()=>{});
+}
+(function(){
+  const t=document.createElement('button'); t.className='btn ghost narr'; t.type='button';
+  const pinta=()=>{t.innerHTML=NARR?'🔊 Narração ligada':'🔇 Narração desligada';t.setAttribute('aria-pressed',NARR)};
+  t.onclick=()=>{NARR=!NARR;try{localStorage.setItem('narracao',NARR?'1':'0')}catch(e){};pinta();NARR?falar(S.atual):voz.pause()};
+  pinta(); $('header.top').appendChild(t);
+  $$('section.mis').forEach(sec=>{const n=+sec.dataset.n,h=sec.querySelector('h2');
+    const b=document.createElement('button');b.className='btn ghost ouvir';b.type='button';b.innerHTML='🔊 Ouvir explicação';
+    b.onclick=()=>falar(n,true); h.insertAdjacentElement('afterend',b);});
+})();
+function ir(n){
+  if(n!==S.atual||!voz.src) falar(n);
+  S.atual=n; if(n>S.max) S.max=n; save();
+  $$('section.mis').forEach(s=>s.classList.toggle('on',+s.dataset.n===n));
+  if(n===TOTAL_MIS) montarResumo();
+  atualizarMissao(); window.scrollTo({top:0,behavior:'smooth'});
+}
+function desenharPassos(){
+  const box=$('#steps'); box.innerHTML='';
+  for(let n=1;n<=TOTAL_MIS;n++){
+    const b=document.createElement('button');
+    b.textContent=n===TOTAL_MIS?'Fim':n;
+    b.setAttribute('aria-label',n===TOTAL_MIS?'Resultado':'Missão '+n);
+    if(n===S.atual) b.classList.add('atual'); else if(n<TOTAL_MIS&&missaoCompleta(n)) b.classList.add('feito');
+    b.disabled=n>S.max||S.atual===0;
+    b.onclick=()=>ir(n); box.appendChild(b);
+  }
+}
+$$('[data-prox]').forEach(b=>b.onclick=()=>ir(S.atual+1));
+function num(v){v=String(v).trim().replace(/\s/g,'').replace(',','.');return v===''||isNaN(+v)?null:+v}
+function opcoes(sel,cb){$$(sel+' button').forEach(b=>b.onclick=()=>{$$(sel+' button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');cb(+b.dataset.v,b)})}
+function tween(ms,f,done){const t0=performance.now();const st=t=>{const p=Math.min(1,(t-t0)/ms);f(1-Math.pow(1-p,3));p<1?requestAnimationFrame(st):done&&done()};requestAnimationFrame(st)}
+
+/* ===== Gráfico em canvas ===== */
+function Graph(cv,o){
+  const g=Object.assign({pad:30,lx:1,ly:1,onDraw:null},o), ctx=cv.getContext('2d'); g.ctx=ctx;
+  g.X=x=>g.pad+(x-g.x0)/(g.x1-g.x0)*(g.w-2*g.pad);
+  g.Y=y=>g.h-g.pad-(y-g.y0)/(g.y1-g.y0)*(g.h-2*g.pad);
+  g.ix=p=>g.x0+(p-g.pad)/(g.w-2*g.pad)*(g.x1-g.x0);
+  g.iy=p=>g.y0+(g.h-g.pad-p)/(g.h-2*g.pad)*(g.y1-g.y0);
+  g.draw=()=>{
+    if(!g.w) return; ctx.clearRect(0,0,g.w,g.h);
+    ctx.lineWidth=1;
+    for(let x=Math.ceil(g.x0);x<=g.x1;x++){ctx.strokeStyle=x%g.lx===0?'#C3D4E8':'#E8EEF6';ctx.beginPath();ctx.moveTo(g.X(x),g.Y(g.y0));ctx.lineTo(g.X(x),g.Y(g.y1));ctx.stroke();}
+    for(let y=Math.ceil(g.y0);y<=g.y1;y++){ctx.strokeStyle=y%g.ly===0?'#C3D4E8':'#E8EEF6';ctx.beginPath();ctx.moveTo(g.X(g.x0),g.Y(y));ctx.lineTo(g.X(g.x1),g.Y(y));ctx.stroke();}
+    ctx.strokeStyle='#15223D';ctx.lineWidth=2.5;
+    ctx.beginPath();ctx.moveTo(g.X(g.x0),g.Y(0));ctx.lineTo(g.X(g.x1),g.Y(0));ctx.moveTo(g.X(0),g.Y(g.y0));ctx.lineTo(g.X(0),g.Y(g.y1));ctx.stroke();
+    ctx.fillStyle='#53627C';ctx.font='700 13px Nunito, sans-serif';ctx.textAlign='center';ctx.textBaseline='top';
+    for(let x=Math.ceil(g.x0);x<=g.x1;x++) if(x!==0&&x%g.lx===0) ctx.fillText(x,g.X(x),g.Y(0)+5);
+    ctx.textAlign='right';ctx.textBaseline='middle';
+    for(let y=Math.ceil(g.y0);y<=g.y1;y++) if(y!==0&&y%g.ly===0) ctx.fillText(y,g.X(0)-6,g.Y(y));
+    ctx.textAlign='right';ctx.textBaseline='top';ctx.fillText('0',g.X(0)-5,g.Y(0)+4);
+    ctx.font='800 15px Nunito, sans-serif';ctx.fillStyle='#15223D';
+    ctx.textAlign='right';ctx.textBaseline='bottom';ctx.fillText('x',g.X(g.x1)-4,g.Y(0)-4);
+    ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText('y',g.X(0)+6,g.Y(g.y1)+2);
+    g.onDraw&&g.onDraw(g,ctx);
+  };
+  g.resize=()=>{const r=cv.getBoundingClientRect(); if(!r.width) return; const d=window.devicePixelRatio||1; cv.width=Math.round(r.width*d); cv.height=Math.round(r.height*d); ctx.setTransform(d,0,0,d,0,0); g.w=r.width; g.h=r.height; g.draw();};
+  new ResizeObserver(g.resize).observe(cv);
+  g.fn=(f,col,lw=4,dash,xa=g.x0,xb=g.x1)=>{ctx.save();ctx.beginPath();ctx.rect(0,0,g.w,g.h);ctx.clip();ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.setLineDash(dash||[]);ctx.beginPath();for(let i=0;i<=240;i++){const x=xa+(xb-xa)*i/240;const px=g.X(x),py=g.Y(f(x));i?ctx.lineTo(px,py):ctx.moveTo(px,py)}ctx.stroke();ctx.restore();};
+  g.dot=(x,y,col,r=8)=>{ctx.beginPath();ctx.arc(g.X(x),g.Y(y),r,0,7);ctx.fillStyle=col;ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle='#fff';ctx.stroke();};
+  g.label=(t,x,y,col,dx=10,dy=-10)=>{ctx.font='800 14px "JetBrains Mono", monospace';ctx.textAlign='left';ctx.textBaseline='bottom';const px=g.X(x)+dx,py=g.Y(y)+dy;ctx.lineWidth=4;ctx.strokeStyle='#fff';ctx.strokeText(t,px,py);ctx.fillStyle=col;ctx.fillText(t,px,py);};
+  g.tap=cb=>cv.addEventListener('pointerdown',e=>{const r=cv.getBoundingClientRect();if(g.w!==r.width) g.resize();cb(g.ix(e.clientX-r.left),g.iy(e.clientY-r.top))});
+  return g;
+}
+
+/* ===== Servidor de entregas (Supabase · função funcoes-9ano) ===== */
+const API='https://jzepdmolnoobgbgdavyf.supabase.co/functions/v1/funcoes-9ano',API_KEY='sb_publishable_wjcJ0tnDxK9ucEu3B3vchQ_CtMn6R8M';
+async function api(rota,corpo){
+  const r=await fetch(API+'/'+rota,{method:corpo?'POST':'GET',headers:{apikey:API_KEY,...(corpo?{'Content-Type':'application/json'}:{}),...(S.token?{'x-session':S.token}:{})},body:corpo?JSON.stringify(corpo):undefined,signal:AbortSignal.timeout(20000)});
+  const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||'Não foi possível conectar. Tente novamente.');return d;
+}
+const quando=d=>new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Manaus',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(d));
+function mostrarPrazo(p){if(p) $('#prazo-ini').textContent='Prazo: até '+quando(p).replace(',',' às')+' (horário de Manaus).'}
+
+/* ===== 0. Identificação: turma + nome da lista oficial ===== */
+let pedidoNomes=0;
+async function carregarNomes(){
+  const id=++pedidoNomes,t=$('#turma').value,sel=$('#aluno');
+  sel.disabled=true;sel.replaceChildren(new Option(t?'Carregando nomes…':'Escolha a turma primeiro',''));$('#recarregar').hidden=true;$('#fb-ini').className='fb';
+  if(!t) return;
+  try{const d=await api('alunos?atividade='+ATIV_ID+'&turma='+encodeURIComponent(t));if(id!==pedidoNomes)return;
+    sel.replaceChildren(new Option('Escolha seu nome',''),...d.alunos.map(a=>new Option(a.nome,a.id)));sel.disabled=false;mostrarPrazo(d.prazo);}
+  catch(e){if(id!==pedidoNomes)return;fb('ini','erro',e.message);$('#recarregar').hidden=false;}
+}
+$('#turma').onchange=carregarNomes;$('#recarregar').onclick=carregarNomes;
+$('#comecar').onclick=async()=>{
+  const turma=$('#turma').value,aluno=$('#aluno').value,b=$('#comecar');
+  if(!turma){fb('ini','erro','Escolha a sua turma.');return}
+  if(!aluno){fb('ini','erro','Escolha o seu nome na lista.');return}
+  b.disabled=true;fb('ini','rev','Conferindo seu acesso…');
+  try{
+    const d=await api('entrar',{atividade:ATIV_ID,turma,aluno_id:aluno});
+    if(S.aluno_id&&S.aluno_id!==d.aluno.id){S.itens={};S.max=0;S.atual=0;S.fim=null;S.entrega=null;S.envio=null;}
+    S.token=d.token;S.aluno_id=d.aluno.id;S.nome=d.aluno.nome;S.turma=d.aluno.turma;S.prazo=d.prazo;
+    if(d.entrega&&!S.entrega) S.entrega=d.entrega;
+    save();mostrarAluno();ir(Math.max(1,S.atual||1));
+  }catch(e){fb('ini','erro',e.message)}finally{b.disabled=false}
+};
+function mostrarAluno(){
+  let el=$('#quem');if(!el){el=document.createElement('p');el.id='quem';el.className='muted';$('header.top').insertBefore(el,$('#steps'));}
+  el.innerHTML=S.token?`Aluno: <b>${S.nome.replace(/</g,'&lt;')}</b> · ${S.turma.replace('º ','º ano ')}`:'';
+}
+/* Entrega: envia todas as respostas; pode reenviar (vale a última). */
+async function entregar(){
+  const b=$('#entregar');if(!S.token){$('#env-status').textContent='Entre com sua turma e nome para entregar.';ir(0);return}
+  if(!S.envio){S.envio=crypto.randomUUID?crypto.randomUUID():'10000000-1000-4000-8000-100000000000'.replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));save();}
+  b.disabled=true;$('#env-status').textContent='Enviando sua atividade…';
+  try{
+    const r=await api('entregar',{envio:S.envio,itens:S.itens});
+    S.entrega={protocolo:r.protocolo,enviada_em:r.enviada_em};S.envioFeito=S.envio;save();pintarEntrega();
+  }catch(e){
+    $('#env-status').innerHTML='✘ '+e.message;b.disabled=false;
+    if(/Sessão|Entre com turma/.test(e.message)){S.token=null;save();$('#env-status').innerHTML+=' <a href="#" id="relogar">Entrar de novo</a>';$('#relogar').onclick=ev=>{ev.preventDefault();ir(0)};}
+  }
+}
+function pintarEntrega(){
+  const ok=S.entrega&&S.envioFeito&&S.envioFeito===S.envio;
+  $('#entrega').classList.toggle('feita',!!ok);
+  $('#entregar').disabled=!!ok;$('#entregar').textContent=ok?'✔ Atividade entregue':'Entregar atividade';
+  $('#env-status').innerHTML=ok?`✔ Entrega registrada em <b>${quando(S.entrega.enviada_em)}</b> (Manaus).<br><small>Protocolo: ${S.entrega.protocolo}</small>`
+    :S.entrega?`Você já entregou antes (${quando(S.entrega.enviada_em)}). Toque em Entregar para enviar esta nova tentativa.`:'Falta entregar para registrar sua participação.';
+}
+
+
+
+const M=n=>String(n).replace('-','−');           /* sinal de menos tipográfico */
+const P=n=>'('+M(n)+')';                          /* número entre parênteses */
+function tabela(sel,xs,conta,f,rotulo){
+  const tb=$(sel+' tbody');
+  xs.forEach(x=>tb.insertAdjacentHTML('beforeend',`<tr><td>${M(x)}</td><td style="font-size:.85em">${conta(x)}</td><td><input class="num" inputmode="text" data-x="${x}" aria-label="${rotulo} ${M(x)}"></td></tr>`));
+}
+function conferirTabela(id,sel,f,opt){
+  if(feito(id)) return checar(id,true,{});
+  let todos=true,vazio=false;
+  $$(sel+' input').forEach(i=>{const v=num(i.value.replace('−','-')),ok=v===f(+i.dataset.x);if(v===null)vazio=true;i.classList.toggle('certo',ok);i.classList.toggle('errado',!ok&&v!==null);if(!ok)todos=false});
+  if(vazio&&!todos){fb(id,'erro','Preencha todas as linhas antes de conferir.');return}
+  const dep=opt.depois;
+  checar(id,todos,Object.assign({},opt,{depois:ok=>{preencher(sel,f);dep&&dep(ok)}}));
+}
+function preencher(sel,f){$$(sel+' input').forEach(i=>{i.value=M(f(+i.dataset.x));i.classList.add('certo');i.classList.remove('errado')})}
+
+/* ===== 1. Azulejos ===== */
+const cv1=$('#cv1'),ctx1=cv1.getContext('2d');let w1=0,h1=0;
+function draw1(){
+  const r=cv1.getBoundingClientRect();if(!r.width)return;const d=devicePixelRatio||1;
+  if(r.width!==w1||r.height!==h1){w1=r.width;h1=r.height;cv1.width=Math.round(w1*d);cv1.height=Math.round(h1*d);}
+  ctx1.setTransform(d,0,0,d,0,0);ctx1.clearRect(0,0,w1,h1);
+  const x=+$('#r1').value, s=Math.min((h1-60)/6,(w1-40)/6), ox=(w1-s*x)/2, oy=(h1-s*x)/2+10;
+  for(let i=0;i<x;i++)for(let j=0;j<x;j++){ctx1.fillStyle=(i+j)%2?'#BFD3F6':'#E6EEFC';ctx1.fillRect(ox+i*s,oy+j*s,s,s);ctx1.strokeStyle='#2360D8';ctx1.lineWidth=1.5;ctx1.strokeRect(ox+i*s,oy+j*s,s,s);}
+  ctx1.fillStyle='#15223D';ctx1.font='800 17px "JetBrains Mono", monospace';ctx1.textAlign='center';ctx1.textBaseline='bottom';
+  ctx1.fillText(`${x}·${x} = ${x}² = ${x*x} azulejos`,w1/2,oy-8);
+}
+new ResizeObserver(draw1).observe(cv1);
+$('#r1').oninput=()=>{$('#o1').textContent=$('#r1').value;draw1()};
+const f1=x=>x*x;
+tabela('#tab1',[1,2,3,4,5],x=>`${x}·${x}`,f1,'azulejos para lado');
+$('#c1a').onclick=()=>conferirTabela('m1a','#tab1',f1,{dica:'Use o controle acima para ver o piso: lado vezes lado. As caixas vermelhas estão erradas.',resposta:'1, 4, 9, 16 e 25 azulejos. Ex.: (4)·(4) = 16.'});
+$('#c1b').onclick=()=>{const v=num($('#i1b').value);if(v===null){fb('m1b','erro','Digite um número.');return}
+  checar('m1b',v===11,{dica:'Os degraus são 3, 5, 7, 9… Cada um é 2 a mais que o anterior. Ou faça (36 − 25).',resposta:'+11, porque (36 − 25) = 11. Os degraus mudam (3, 5, 7, 9, 11…), por isso o gráfico não é uma reta.'})};
+opcoes('#op1c',v=>checar('m1c',v===1,{dica:'O piso tem x fileiras com x azulejos cada uma: x vezes x.',resposta:'y = x² (lê-se “x ao quadrado”).'}));
+
+/* ===== 2. y = x² + 1 ===== */
+const f2=x=>x*x+1, X2=[-3,-2,-1,0,1,2,3];
+tabela('#tab2',X2,x=>`${P(x)}² + 1`,f2,'y para x igual a');
+let mar2=0,lig2=0;
+const g2=Graph($('#cv2'),{x0:-4.3,x1:4.3,y0:-0.8,y1:11.3,lx:1,ly:1,onDraw:g=>{
+  if(lig2>0) g.fn(f2,'#2360D8',4,null,-3.15,-3.15+6.3*lig2);
+  X2.forEach((x,i)=>{if(i<mar2) g.dot(x,f2(x),'#E03A2B');});
+}});
+$('#c2a').onclick=()=>conferirTabela('m2a','#tab2',f2,{dica:'Primeiro eleve ao quadrado (o resultado nunca é negativo), depois some 1. Ex.: (−2)² + 1 = 4 + 1 = 5.',resposta:'10, 5, 2, 1, 2, 5, 10. Ex.: (−3)² + 1 = 9 + 1 = 10.',depois:()=>{$('#mar2').disabled=false}});
+$('#mar2').onclick=()=>{$('#mar2').disabled=true;let k=0;const t=setInterval(()=>{mar2=++k;g2.draw();if(k>=7){clearInterval(t);$('#lig2').disabled=false}},280)};
+$('#lig2').onclick=()=>tween(1500,p=>{lig2=p;g2.draw()});
+opcoes('#op2b',v=>checar('m2b',v===1,{dica:'Marque e ligue os pontos com os botões acima e observe a forma.',resposta:'Uma parábola. Veja que x = −2 e x = 2 dão o mesmo y, porque (−2)² = (2)² = 4.'}));
+
+/* ===== 3. y = 2x² ===== */
+const f3=x=>2*x*x, X3=[-2,-1,0,1,2];
+tabela('#tab3',X3,x=>`2·${P(x)}²`,f3,'y para x igual a');
+const g3=Graph($('#cv3'),{x0:-3.3,x1:3.3,y0:-0.8,y1:10.3,lx:1,ly:1,onDraw:g=>{
+  g.fn(x=>x*x,'#9DB4D6',3);
+  g.fn(f3,'#E03A2B',4);
+  X3.forEach(x=>g.dot(x,f3(x),'#E03A2B',6));
+}});
+$('#c3a').onclick=()=>conferirTabela('m3a','#tab3',f3,{dica:'Primeiro o quadrado, depois vezes 2. Ex.: 2·(−1)² = 2·(1) = 2.',resposta:'8, 2, 0, 2, 8. Ex.: 2·(−2)² = 2·(4) = 8.',depois:()=>{$('#ver3').style.display='flex'}});
+$('#c3b').onclick=()=>{const v=num($('#i3b').value);if(v===null){fb('m3b','erro','Digite um número.');return}
+  checar('m3b',v===27,{dica:'Primeiro (3)² = 9. Depois multiplique por 3. Cuidado: não é 3·3 = 9 e pronto, nem (9)².',resposta:'27, porque y = 3·(3)² = 3·(9) = 27.'})};
+
+/* ===== 4. Treino ===== */
+const TR4=[{e:'(−4)²',v:16},{e:'3·(2)²',v:12},{e:'2·(−3)²',v:18},{e:'(−5)² + 1',v:26}];
+$('#tr4').innerHTML=TR4.map((t,i)=>`<label>${t.e} = <input class="num" inputmode="text" data-i="${i}" aria-label="${t.e}"></label>`).join('');
+$('#c4a').onclick=()=>{
+  if(feito('m4a')) return checar('m4a',true,{});
+  let todos=true,vazio=false;
+  $$('#tr4 input').forEach(i=>{const v=num(i.value.replace('−','-')),ok=v===TR4[+i.dataset.i].v;if(v===null)vazio=true;i.classList.toggle('certo',ok);i.classList.toggle('errado',!ok&&v!==null);if(!ok)todos=false});
+  if(vazio&&!todos){fb('m4a','erro','Preencha todas as contas antes de conferir.');return}
+  checar('m4a',todos,{dica:'As vermelhas estão erradas. Lembre: (−4)² = (−4)·(−4), menos vezes menos dá mais. E faça o quadrado antes de multiplicar.',resposta:'(−4)² = 16 · 3·(2)² = 3·(4) = 12 · 2·(−3)² = 2·(9) = 18 · (−5)² + 1 = 25 + 1 = 26.',depois:()=>$$('#tr4 input').forEach(i=>{i.value=TR4[+i.dataset.i].v;i.classList.add('certo');i.classList.remove('errado')})});
+};
+
+/* ===== 5. Bola ===== */
+const f5=t=>-t*t+6*t;
+const g5=Graph($('#cv5'),{x0:-0.6,x1:6.8,y0:-0.8,y1:10.4,lx:1,ly:1,onDraw:(g,ctx)=>{
+  const t=+$('#r5').value;
+  g.fn(f5,'#C3D4E8',3,[8,7],0,6);
+  if(t>0) g.fn(f5,'#2360D8',4,null,0,t);
+  for(let k=0;k<=t;k++) g.dot(k,f5(k),'#2360D8',4);
+  ctx.strokeStyle='#EA9200';ctx.lineWidth=2;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(g.X(t),g.Y(0));ctx.lineTo(g.X(t),g.Y(f5(t)));ctx.stroke();ctx.setLineDash([]);
+  ctx.font='24px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('⚽',g.X(t),g.Y(f5(t)));
+  ctx.font='800 12px Nunito, sans-serif';ctx.fillStyle='#53627C';ctx.textAlign='right';ctx.textBaseline='bottom';ctx.fillText('tempo t (s)',g.X(6.8)-2,g.Y(0)-16);
+  ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText('altura h (m)',g.X(0)+16,g.Y(10.4)+2);
+}});
+function upd5(){
+  const t=+$('#r5').value;$('#o5').textContent=t;
+  $('#l5').innerHTML=`t = <span class="t">${t}</span> s<br>h = −<span class="t">(${t})</span>² + 6·<span class="t">(${t})</span><br>h = ${M(-t*t)} + ${6*t} = <b>${f5(t)} m</b>`;
+  g5.draw();
+}
+$('#r5').oninput=upd5;upd5();
+$('#c5a').onclick=()=>{const v=num($('#i5a').value);if(v===null){fb('m5a','erro','Digite um número.');return}
+  checar('m5a',v===9,{dica:'Arraste o tempo e veja em que segundo a altura para de subir e começa a descer.',resposta:'9 metros, em t = 3 s: h = −(3)² + 6·(3) = −9 + 18 = 9.'})};
+$('#c5b').onclick=()=>{const v=num($('#i5b').value);if(v===null){fb('m5b','erro','Digite um número.');return}
+  checar('m5b',v===6,{dica:'A bola está no chão quando a altura é 0. Isso acontece no chute (t = 0) e mais uma vez.',resposta:'6 segundos: h = −(6)² + 6·(6) = −36 + 36 = 0.'})};
+
+/* ===== Restaurar progresso ===== */
+/* ===== Resultado ===== */
+function montarResumo(){
+  if(!S.fim){S.fim=new Date().toISOString();save();}
+  const ids=Object.keys(ITENS);let ac=0,prim=0;
+  $('#r-tab').innerHTML=ids.map(id=>{const it=S.itens[id]||{};if(it.ok)ac++;if(it.ok&&it.t===1)prim++;
+    const s=it.ok?(it.t===1?'✔ de primeira':`✔ na ${it.t}ª tentativa`):it.rev?'💡 viu a resposta':'— não respondeu';
+    return `<tr><td>${ITENS[id]}</td><td>${s}</td></tr>`}).join('');
+  $('#r-nome').textContent=S.nome||'Sem nome';
+  const d=new Date(S.fim);
+  $('#r-info').textContent=`${S.turma} · ${TITULO_ATIV} · concluída em ${d.toLocaleDateString('pt-BR')} às ${d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;
+  $('#r-selo').textContent=`${ac} de ${ids.length} acertos`;
+  pintarEntrega();
+}
+$('#entregar').onclick=entregar;
+function zerar(manterAluno){
+  const keep=manterAluno?{nome:S.nome,turma:S.turma,aluno_id:S.aluno_id,token:S.token,entrega:S.entrega}:{};
+  S=Object.assign({nome:'',turma:'',itens:{},max:0,atual:0,fim:null},keep);save();location.reload();
+}
+$('#refazer').onclick=()=>{if(confirm('Refazer a atividade do começo? Sua entrega anterior continua registrada. Para valer a nova tentativa, entregue de novo no final.'))zerar(true)};
+$('#trocar').onclick=()=>{if(confirm('Trocar de aluno? As respostas salvas neste aparelho serão apagadas. As entregas já feitas continuam registradas.'))zerar(false)};
+
+Object.keys(ITENS).forEach(id=>{const it=S.itens[id];if(it&&(it.ok||it.rev)) fb(id,it.ok?'ok':'rev',it.ok?'✔ Você já acertou esta.':'💡 Você já viu a resposta desta.')});
+
+if(feito('m1a')) preencher('#tab1',f1);
+if(feito('m2a')){preencher('#tab2',f2);mar2=7;lig2=1;}
+if(feito('m3a')){preencher('#tab3',f3);$('#ver3').style.display='flex';}
+if(feito('m4a')) $$('#tr4 input').forEach(i=>{i.value=TR4[+i.dataset.i].v;i.classList.add('certo')});
+mostrarAluno();
+if(S.turma){$('#turma').value=S.turma;carregarNomes().then(()=>{if(S.aluno_id)$('#aluno').value=S.aluno_id});}
+ir(S.token?(S.atual||1):0);
+</script>
+</body>
+</html>

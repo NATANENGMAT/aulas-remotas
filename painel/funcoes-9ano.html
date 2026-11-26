@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#EEF3F9">
+<title>Entregas Funções 9º</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@500;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --paper:#EEF3F9; --card:#FFFFFF; --line:#CFDCEB; --ink:#15223D; --muted:#53627C;
+  --red:#E03A2B; --blue:#2360D8; --green:#0F8F58; --orange:#EA9200;
+  --ok-bg:#E4F5EC; --err-bg:#FDE8E6;
+  --f-display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Nunito","Segoe UI",system-ui,sans-serif;
+  --f-num:"JetBrains Mono",Consolas,ui-monospace,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.45}
+main{max-width:980px;margin:0 auto;padding:16px max(16px,env(safe-area-inset-right)) 40px max(16px,env(safe-area-inset-left));display:flex;flex-direction:column;gap:16px}
+.eyebrow{font-weight:800;font-size:.76em;letter-spacing:.1em;text-transform:uppercase;color:var(--red)}
+h1,h2{font-family:var(--f-display);font-weight:800;line-height:1.05;margin:0;text-wrap:balance}
+h1{font-size:clamp(30px,6.5vw,48px)}
+h2{font-size:clamp(22px,4.6vw,30px)}
+p{margin:0}
+.muted{color:var(--muted);font-size:.92em}
+.card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:16px}
+a{color:var(--blue);font-weight:800}
+
+/* Relógio */
+.relogio{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center}
+.relogio svg{width:clamp(130px,34vw,190px);height:auto;display:block}
+.tempo{display:flex;flex-direction:column;gap:6px;min-width:0}
+.tempo .rot{font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:.78em}
+.digitos{display:flex;gap:8px;flex-wrap:wrap}
+.digitos div{background:var(--paper);border-radius:12px;padding:6px 8px;text-align:center;min-width:3.4em}
+.digitos b{display:block;font-family:var(--f-num);font-size:clamp(24px,6vw,36px);line-height:1.1}
+.digitos span{font-size:.72em;font-weight:800;color:var(--muted)}
+.fim{font-weight:800}
+.encerrado .digitos b{color:var(--red)}
+#ponteiro{transform-origin:100px 100px}
+#anel{transition:stroke-dashoffset .9s linear}
+@media (max-width:520px){.relogio{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}.digitos{justify-content:center}}
+
+/* Atividades */
+.ativs{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.ativ{display:flex;flex-direction:column;gap:10px}
+.ativ .data{font-family:var(--f-num);font-weight:700;color:var(--blue)}
+.btn{display:inline-flex;align-items:center;justify-content:center;font:inherit;font-weight:800;border-radius:12px;padding:.6em 1em;min-height:48px;border:2px solid var(--ink);background:var(--ink);color:#fff;text-decoration:none;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--ink)}
+.barras{display:flex;flex-direction:column;gap:6px}
+.barra{display:grid;grid-template-columns:5.2em minmax(0,1fr) 4.2em;gap:8px;align-items:center;font-weight:800;font-size:.9em}
+.barra .trilho{height:12px;background:var(--paper);border-radius:6px;overflow:hidden}
+.barra .trilho i{display:block;height:100%;background:var(--green);border-radius:6px;transition:width .6s}
+.barra span:last-child{font-family:var(--f-num);text-align:right}
+
+/* Lista */
+.turmas{display:flex;gap:8px;flex-wrap:wrap}
+.turmas button{font:inherit;font-weight:800;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:999px;padding:.4em 1em;min-height:44px;cursor:pointer}
+.turmas button[aria-pressed=true]{background:var(--ink);color:#fff}
+input[type=search]{font:inherit;border:2px solid var(--line);border-radius:12px;padding:.5em .8em;min-height:46px;width:100%;background:#fff;color:var(--ink)}
+.lista{width:100%;border-collapse:collapse}
+.lista th,.lista td{padding:.5em .4em;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.lista thead th{font-size:.8em;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);position:sticky;top:0;background:#fff}
+.lista td.st{width:6.6em}
+@media (max-width:520px){.lista{font-size:.9em}.lista .n{display:none}.lista th,.lista td{padding:.45em .25em}.tag{white-space:normal;text-align:center;line-height:1.15}.lista td.st{width:5.6em}}
+.lista .n{font-family:var(--f-num);color:var(--muted);font-size:.85em;width:2em}
+.tag{display:inline-block;font-weight:800;font-size:.82em;border-radius:8px;padding:.15em .5em;white-space:nowrap}
+.tag.ok{background:var(--ok-bg);color:#0A5C39}
+.tag.nao{background:var(--err-bg);color:#8A1F15}
+.hora{display:block;font-family:var(--f-num);font-size:.74em;color:var(--muted);margin-top:2px}
+.erro{background:var(--err-bg);border-left:6px solid var(--red);border-radius:10px;padding:.6em .8em;font-weight:700}
+footer{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){#ponteiro{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="eyebrow">CETI Elisa Bessa Freire · Prof. Natanael · Matemática</div>
+  <h1>Entregas das aulas remotas de 26 e 27/11</h1>
+  <p class="muted">9º ano 1, 9º ano 2 e 9º ano 4 · Consulta aberta para alunos, responsáveis e professor.</p>
+</header>
+
+<section class="card relogio" id="relogio" aria-live="off">
+  <svg viewBox="0 0 200 200" aria-hidden="true">
+    <circle cx="100" cy="100" r="88" fill="#fff" stroke="#CFDCEB" stroke-width="12"/>
+    <circle id="anel" cx="100" cy="100" r="88" fill="none" stroke="#0F8F58" stroke-width="12" stroke-linecap="round" transform="rotate(-90 100 100)" stroke-dasharray="552.92" stroke-dashoffset="0"/>
+    <g id="marcas"></g>
+    <line id="ponteiro" x1="100" y1="100" x2="100" y2="30" stroke="#E03A2B" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="100" cy="100" r="7" fill="#15223D"/>
+  </svg>
+  <div class="tempo">
+    <span class="rot" id="rot">Tempo para terminar as 2 atividades</span>
+    <div class="digitos" id="digitos">
+      <div><b id="dd">–</b><span>dias</span></div>
+      <div><b id="hh">–</b><span>horas</span></div>
+      <div><b id="mm">–</b><span>min</span></div>
+      <div><b id="ss">–</b><span>seg</span></div>
+    </div>
+    <p class="fim" id="fim">Prazo: 27/11 às 23h59 (horário de Manaus)</p>
+  </div>
+</section>
+
+<section class="ativs" id="ativs"></section>
+
+<section class="card" style="display:flex;flex-direction:column;gap:12px">
+  <h2>Quem já entregou</h2>
+  <nav class="turmas" id="turmas" aria-label="Escolher turma"></nav>
+  <label class="muted" for="busca">Encontrar aluno</label>
+  <input type="search" id="busca" placeholder="Digite o nome" autocomplete="off">
+  <p class="erro" id="erro" role="alert" hidden></p>
+  <div id="lista"><p class="muted">Carregando as entregas…</p></div>
+</section>
+
+<footer>
+  <p class="muted" id="atualizado"></p>
+  <button class="btn ghost" id="atualizar" type="button">Atualizar entregas</button>
+  <p class="muted">Vale a última entrega de cada aluno. Horários de Manaus. A lista se atualiza sozinha a cada 15 segundos.</p></footer>
+</main>
+
+<script>
+'use strict';
+const API='https://jzepdmolnoobgbgdavyf.supabase.co/functions/v1/funcoes-9ano/painel',KEY='sb_publishable_wjcJ0tnDxK9ucEu3B3vchQ_CtMn6R8M';
+const INICIO=Date.parse('2026-11-26T00:00:00-04:00');
+let prazo=Date.parse('2026-11-27T23:59:59-04:00'),desvio=0,dados=null,turma='9º 1',ocupado=false;
+const $=id=>document.getElementById(id);
+const fmt=(d,o)=>new Intl.DateTimeFormat('pt-BR',Object.assign({timeZone:'America/Manaus'},o)).format(new Date(d));
+const hora=d=>fmt(d,{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).replace(',',' às');
+const chave=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLocaleUpperCase('pt-BR');
+function el(tag,txt,cls){const n=document.createElement(tag);if(txt!=null)n.textContent=txt;if(cls)n.className=cls;return n}
+
+/* ===== Relógio regressivo ===== */
+(function(){const g=$('marcas');for(let i=0;i<60;i++){const a=i*6*Math.PI/180,r1=i%5?72:66,l=document.createElementNS('http://www.w3.org/2000/svg','line');
+  l.setAttribute('x1',100+r1*Math.sin(a));l.setAttribute('y1',100-r1*Math.cos(a));l.setAttribute('x2',100+76*Math.sin(a));l.setAttribute('y2',100-76*Math.cos(a));
+  l.setAttribute('stroke',i%5?'#C3D4E8':'#53627C');l.setAttribute('stroke-width',i%5?1.5:3);g.appendChild(l);}})();
+const pad=n=>String(n).padStart(2,'0');
+function tique(){
+  const agora=Date.now()+desvio,resta=Math.max(0,prazo-agora),seg=Math.floor(resta/1000);
+  $('dd').textContent=Math.floor(seg/86400);$('hh').textContent=pad(Math.floor(seg%86400/3600));$('mm').textContent=pad(Math.floor(seg%3600/60));$('ss').textContent=pad(seg%60);
+  const frac=Math.min(1,Math.max(0,resta/(prazo-INICIO)));
+  const anel=$('anel');anel.setAttribute('stroke-dashoffset',String(552.92*(1-frac)));
+  anel.setAttribute('stroke',frac>.25?'#0F8F58':frac>.08?'#EA9200':'#E03A2B');
+  $('ponteiro').style.transform=`rotate(${-(seg%60)*6}deg)`;
+  const fim=resta<=0;$('relogio').classList.toggle('encerrado',fim);
+  $('rot').textContent=fim?'Prazo encerrado':'Tempo para terminar as 2 atividades';
+  $('fim').textContent=(fim?'Terminou em ':'Prazo: ')+hora(prazo)+' (horário de Manaus)';
+}
+setInterval(tique,1000);tique();
+
+/* ===== Entregas ===== */
+function render(){
+  if(!dados) return;
+  const ativs=dados.atividades;
+  /* Cartões das atividades com link e contagem por turma */
+  $('ativs').replaceChildren(...ativs.map(a=>{
+    const c=el('article',null,'card ativ');
+    c.append(el('span',a.data.slice(8,10)+'/'+a.data.slice(5,7)+' · Aula remota','data'),el('h2',a.titulo));
+    const barras=el('div',null,'barras');
+    for(const t of ['9º 1','9º 2','9º 4']){const al=a.alunos.filter(s=>s.turma===t),n=al.filter(s=>s.enviada_em).length;
+      const b=el('div',null,'barra');const tr=el('div',null,'trilho'),i=el('i');i.style.width=(al.length?100*n/al.length:0)+'%';tr.append(i);
+      b.append(el('span',t.replace('º ','º ano ')),tr,el('span',n+'/'+al.length));barras.append(b);}
+    const total=a.alunos.filter(s=>s.enviada_em).length;
+    const link=el('a','Abrir atividade ↗','btn');link.href=a.fonte_url;link.target='_blank';link.rel='noopener';
+    c.append(el('p',total+' de '+a.alunos.length+' alunos entregaram','muted'),barras,link);return c;}));
+  /* Turmas */
+  $('turmas').replaceChildren(...['9º 1','9º 2','9º 4'].map(t=>{const b=el('button',t.replace('º ','º ano '));b.type='button';b.setAttribute('aria-pressed',String(t===turma));b.onclick=()=>{turma=t;render()};return b}));
+  /* Lista: um aluno por linha, uma coluna por dia */
+  const termo=chave($('busca').value.trim());
+  const base=ativs[0].alunos.filter(s=>s.turma===turma).sort((x,y)=>(x.ordem??0)-(y.ordem??0)||x.nome.localeCompare(y.nome,'pt-BR'));
+  const linhas=base.filter(s=>chave(s.nome).includes(termo));
+  const tab=el('table',null,'lista'),th=el('thead'),hr=el('tr');
+  hr.append(el('th','Nº','n'),el('th','Aluno'),...ativs.map(a=>el('th',a.data.slice(8,10)+'/'+a.data.slice(5,7))));th.append(hr);
+  const tb=el('tbody');
+  linhas.forEach(s=>{const tr=el('tr');tr.append(el('td',String(s.ordem??''),'n'),el('td',s.nome));
+    for(const a of ativs){const x=a.alunos.find(y=>y.turma===s.turma&&y.nome===s.nome),td=el('td',null,'st');
+      if(x&&x.enviada_em){td.append(el('span','✓ Entregou','tag ok'),el('span',hora(x.enviada_em),'hora'))}else td.append(el('span','Não entregou','tag nao'));tr.append(td);}
+    tb.append(tr);});
+  tab.append(th,tb);
+  $('lista').replaceChildren(linhas.length?tab:el('p','Nenhum nome encontrado.','muted'));
+}
+async function atualizar(){
+  if(ocupado||document.hidden) return;ocupado=true;$('atualizar').disabled=true;
+  try{
+    const r=await fetch(API,{headers:{apikey:KEY},signal:AbortSignal.timeout(18000)});const d=await r.json();
+    if(!r.ok||!Array.isArray(d.atividades)) throw Error(d.error||'falha');
+    dados=d;desvio=Date.parse(d.agora)-Date.now();const p=Date.parse(d.atividades[0].prazo);if(p)prazo=p;
+    $('erro').hidden=true;render();tique();$('atualizado').textContent='Atualizado em '+hora(d.atualizado_em)+' · Manaus';
+  }catch(e){$('erro').hidden=false;$('erro').textContent='Não foi possível atualizar agora. Isso é falha de conexão, não falta de entrega. Tente “Atualizar entregas”.';}
+  finally{ocupado=false;$('atualizar').disabled=false}
+}
+$('busca').addEventListener('input',render);$('atualizar').onclick=atualizar;
+let ciclo=setInterval(atualizar,15000);atualizar();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)atualizar()});
+</script>
+</body>
+</html>
