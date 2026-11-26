@@ -226,12 +226,12 @@ a{color:var(--blue);font-weight:800}
   <p>Lembre: o preço é <b>y = 2x + 3</b> (R$ 3,00 de saída + R$ 2,00 por km).</p>
   <div class="tarefa">
     <h3><span>a</span>Uma corrida custou R$ 23,00. Quantos quilômetros ela teve?</h3>
-    <div class="row"><input class="num" id="i5a" inputmode="decimal" aria-label="quilômetros"> <b>km</b> <button class="btn" id="c5a">Conferir</button></div>
+    <div class="row"><input class="num" id="i5a" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="quilômetros"> <b>km</b> <button class="btn" id="c5a">Conferir</button></div>
     <div class="fb" id="fb-m5a"></div>
   </div>
   <div class="tarefa">
     <h3><span>b</span>Quanto custa uma corrida de 7 km?</h3>
-    <div class="row"><b>R$</b> <input class="num" id="i5b" inputmode="decimal" aria-label="preço em reais"> <button class="btn" id="c5b">Conferir</button></div>
+    <div class="row"><b>R$</b> <input class="num" id="i5b" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="preço em reais"> <button class="btn" id="c5b">Conferir</button></div>
     <div class="fb" id="fb-m5b"></div>
   </div>
   <div class="row next"><button class="btn go" data-prox>Ver meu resultado →</button></div>
@@ -423,7 +423,7 @@ function pintarEntrega(){
 /* ===== 1. Mototáxi ===== */
 const f1=x=>2*x+3;
 const tb1=$('#tab1 tbody');
-[0,1,2,3,4].forEach(x=>{tb1.insertAdjacentHTML('beforeend',`<tr><td>${x}</td><td><input class="num" inputmode="decimal" data-x="${x}" aria-label="preço para ${x} km"></td></tr>`)});
+[0,1,2,3,4].forEach(x=>{tb1.insertAdjacentHTML('beforeend',`<tr><td>${x}</td><td><input class="num" inputmode="numeric" pattern="[0-9]*" autocomplete="off" data-x="${x}" aria-label="preço para ${x} km"></td></tr>`)});
 $('#c1a').onclick=()=>{
   if(feito('m1a')) return checar('m1a',true,{});
   let todos=true, vazio=false;

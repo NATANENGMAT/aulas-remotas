@@ -154,13 +154,7 @@ a{color:var(--blue);font-weight:800}
     <div class="fb" id="fb-m1a"></div>
   </div>
   <div class="tarefa">
-    <h3><span>b</span>Veja os degraus. Qual é o próximo, de 25 para 36?</h3>
-    <div class="degraus"><span>1</span><span class="d">+3</span><span>4</span><span class="d">+5</span><span>9</span><span class="d">+7</span><span>16</span><span class="d">+9</span><span>25</span><span class="d">+ ?</span><span>36</span></div>
-    <div class="row"><b>+</b> <input class="num" id="i1b" inputmode="numeric" aria-label="próximo degrau"> <button class="btn" id="c1b">Conferir</button></div>
-    <div class="fb" id="fb-m1b"></div>
-  </div>
-  <div class="tarefa">
-    <h3><span>c</span>Qual fórmula dá o número de azulejos y para um lado x?</h3>
+    <h3><span>b</span>Qual fórmula dá o número de azulejos y para um lado x?</h3>
     <div class="opcoes" id="op1c">
       <button data-v="0">y = 2x</button>
       <button data-v="1">y = x²</button>
@@ -217,7 +211,7 @@ a{color:var(--blue);font-weight:800}
   </div>
   <div class="tarefa">
     <h3><span>b</span>Quanto vale y = 3x² quando x = 3?</h3>
-    <div class="row"><b>y =</b> <input class="num" id="i3b" inputmode="numeric" aria-label="valor de y"> <button class="btn" id="c3b">Conferir</button></div>
+    <div class="row"><b>y =</b> <input class="num" id="i3b" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="valor de y"> <button class="btn" id="c3b">Conferir</button></div>
     <div class="fb" id="fb-m3b"></div>
   </div>
   <div class="row next"><button class="btn go" data-prox>Próxima missão →</button></div>
@@ -249,12 +243,12 @@ a{color:var(--blue);font-weight:800}
   <div class="graph wide"><canvas id="cv5"></canvas></div>
   <div class="tarefa">
     <h3><span>a</span>Qual é a altura máxima que a bola atinge?</h3>
-    <div class="row"><input class="num" id="i5a" inputmode="numeric" aria-label="altura máxima"> <b>metros</b> <button class="btn" id="c5a">Conferir</button></div>
+    <div class="row"><input class="num" id="i5a" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="altura máxima"> <b>metros</b> <button class="btn" id="c5a">Conferir</button></div>
     <div class="fb" id="fb-m5a"></div>
   </div>
   <div class="tarefa">
     <h3><span>b</span>Depois de quantos segundos a bola volta ao chão?</h3>
-    <div class="row"><input class="num" id="i5b" inputmode="numeric" aria-label="segundos"> <b>segundos</b> <button class="btn" id="c5b">Conferir</button></div>
+    <div class="row"><input class="num" id="i5b" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="segundos"> <b>segundos</b> <button class="btn" id="c5b">Conferir</button></div>
     <div class="fb" id="fb-m5b"></div>
   </div>
   <div class="row next"><button class="btn go" data-prox>Ver meu resultado →</button></div>
@@ -282,13 +276,13 @@ a{color:var(--blue);font-weight:800}
 const KEY='ativ-9ano-2711-2grau';
 const ATIV_ID='elisa-funcao-2grau-271126';
 const ITENS={
-  m1a:'Tabela dos azulejos', m1b:'Próximo degrau', m1c:'Fórmula dos azulejos',
+  m1a:'Tabela dos azulejos', m1c:'Fórmula dos azulejos',
   m2a:'Tabela de y = x² + 1', m2b:'Desenho formado',
   m3a:'Tabela de y = 2x²', m3b:'y = 3x² para x = 3',
   m4a:'Treino de cálculo',
   m5a:'Altura máxima da bola', m5b:'Tempo até voltar ao chão'
 };
-const MISSOES={1:['m1a','m1b','m1c'],2:['m2a','m2b'],3:['m3a','m3b'],4:['m4a'],5:['m5a','m5b']};
+const MISSOES={1:['m1a','m1c'],2:['m2a','m2b'],3:['m3a','m3b'],4:['m4a'],5:['m5a','m5b']};
 const TITULO_ATIV='Função do 2º grau (27/11)';
 const TOTAL_MIS=6;
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -449,7 +443,7 @@ const M=n=>String(n).replace('-','−');           /* sinal de menos tipográfic
 const P=n=>'('+M(n)+')';                          /* número entre parênteses */
 function tabela(sel,xs,conta,f,rotulo){
   const tb=$(sel+' tbody');
-  xs.forEach(x=>tb.insertAdjacentHTML('beforeend',`<tr><td>${M(x)}</td><td style="font-size:.85em">${conta(x)}</td><td><input class="num" inputmode="text" data-x="${x}" aria-label="${rotulo} ${M(x)}"></td></tr>`));
+  xs.forEach(x=>tb.insertAdjacentHTML('beforeend',`<tr><td>${M(x)}</td><td style="font-size:.85em">${conta(x)}</td><td><input class="num" inputmode="numeric" pattern="[0-9]*" autocomplete="off" data-x="${x}" aria-label="${rotulo} ${M(x)}"></td></tr>`));
 }
 function conferirTabela(id,sel,f,opt){
   if(feito(id)) return checar(id,true,{});
@@ -477,8 +471,6 @@ $('#r1').oninput=()=>{$('#o1').textContent=$('#r1').value;draw1()};
 const f1=x=>x*x;
 tabela('#tab1',[1,2,3,4,5],x=>`${x}·${x}`,f1,'azulejos para lado');
 $('#c1a').onclick=()=>conferirTabela('m1a','#tab1',f1,{dica:'Use o controle acima para ver o piso: lado vezes lado. As caixas vermelhas estão erradas.',resposta:'1, 4, 9, 16 e 25 azulejos. Ex.: (4)·(4) = 16.'});
-$('#c1b').onclick=()=>{const v=num($('#i1b').value);if(v===null){fb('m1b','erro','Digite um número.');return}
-  checar('m1b',v===11,{dica:'Os degraus são 3, 5, 7, 9… Cada um é 2 a mais que o anterior. Ou faça (36 − 25).',resposta:'+11, porque (36 − 25) = 11. Os degraus mudam (3, 5, 7, 9, 11…), por isso o gráfico não é uma reta.'})};
 opcoes('#op1c',v=>checar('m1c',v===1,{dica:'O piso tem x fileiras com x azulejos cada uma: x vezes x.',resposta:'y = x² (lê-se “x ao quadrado”).'}));
 
 /* ===== 2. y = x² + 1 ===== */
@@ -508,7 +500,7 @@ $('#c3b').onclick=()=>{const v=num($('#i3b').value);if(v===null){fb('m3b','erro'
 
 /* ===== 4. Treino ===== */
 const TR4=[{e:'(−4)²',v:16},{e:'3·(2)²',v:12},{e:'2·(−3)²',v:18},{e:'(−5)² + 1',v:26}];
-$('#tr4').innerHTML=TR4.map((t,i)=>`<label>${t.e} = <input class="num" inputmode="text" data-i="${i}" aria-label="${t.e}"></label>`).join('');
+$('#tr4').innerHTML=TR4.map((t,i)=>`<label>${t.e} = <input class="num" inputmode="numeric" pattern="[0-9]*" autocomplete="off" data-i="${i}" aria-label="${t.e}"></label>`).join('');
 $('#c4a').onclick=()=>{
   if(feito('m4a')) return checar('m4a',true,{});
   let todos=true,vazio=false;
