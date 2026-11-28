@@ -399,6 +399,36 @@ function mostrarAluno(){
   let el=$('#quem');if(!el){el=document.createElement('p');el.id='quem';el.className='muted';$('header.top').insertBefore(el,$('#steps'));}
   el.innerHTML=S.token?`Aluno: <b>${S.nome.replace(/</g,'&lt;')}</b> · ${S.turma.replace('º ','º ano ')}`:'';
 }
+/* ===== Prazo encerrado: só entra quem recebeu o link pessoal do professor (?l=código) ===== */
+const LIB=(new URLSearchParams(location.search).get('l')||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+const FIM_PRAZO=Date.parse('2026-11-27T23:59:59-04:00');
+if(LIB){
+  if(S.liberacao!==LIB){S.token=null;S.liberacao=LIB;save();}
+  $('#turma').closest('label').style.display='none';$('#aluno').closest('label').style.display='none';
+  $('#prazo-ini').innerHTML='🔓 <b>Atividade liberada pelo professor só para você.</b> Toque em Começar.';
+  $('#comecar').onclick=async()=>{
+    const b=$('#comecar');b.disabled=true;fb('ini','rev','Conferindo seu link…');
+    try{
+      const d=await api('entrar',{atividade:ATIV_ID,liberacao:LIB});
+      if(S.aluno_id&&S.aluno_id!==d.aluno.id){S.itens={};S.max=0;S.atual=0;S.fim=null;S.entrega=null;S.envio=null;}
+      S.token=d.token;S.aluno_id=d.aluno.id;S.nome=d.aluno.nome;S.turma=d.aluno.turma;S.prazo=d.prazo;S.liberacao=LIB;
+      if(d.entrega&&!S.entrega) S.entrega=d.entrega;
+      save();mostrarAluno();ir(Math.max(1,S.atual||1));
+    }catch(e){fb('ini','erro',e.message)}finally{b.disabled=false}
+  };
+}else if(Date.now()>FIM_PRAZO){
+  NARR=false;
+  const st=document.createElement('style');
+  st.textContent='.trava{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px}.trava .card{max-width:520px;text-align:center;padding:32px 22px}.trava .ico{font-size:64px;line-height:1}.trava h1{font-size:30px;margin:12px 0 8px}.trava p{font-size:20px;line-height:1.45;margin:10px 0}.trava .aviso{background:#FDE8E6;color:#B3261E;border-radius:14px;padding:14px;font-weight:800}';
+  document.head.append(st);
+  [...document.body.children].forEach(e=>{if(e.tagName!=='SCRIPT')e.hidden=true});
+  const box=document.createElement('main');box.className='trava';
+  box.innerHTML='<div class="card"><div class="ico">🔒</div><h1>Atividade encerrada</h1>'+
+    '<p>O prazo terminou em <b>27/11 às 23h59</b>.</p>'+
+    '<p class="aviso">Para fazer a atividade agora, entre em contato com o professor Natanael.</p>'+
+    '<p><a href="../../painel/funcoes-9ano.html">Ver o painel de entregas ↗</a></p></div>';
+  document.body.append(box);
+}
 /* Entrega: envia todas as respostas; pode reenviar (vale a última). */
 async function entregar(){
   const b=$('#entregar');if(!S.token){$('#env-status').textContent='Entre com sua turma e nome para entregar.';ir(0);return}
